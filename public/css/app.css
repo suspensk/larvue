@@ -10000,3 +10000,13 @@ a.text-dark:focus {
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+.note-list,
+.note-list li {
+  clear: both;
+  width: 100%;
+}
+
+.note-list li {
+  list-style-type: none;
+}
+
