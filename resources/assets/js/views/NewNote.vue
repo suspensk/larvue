@@ -92,7 +92,7 @@
         methods : {
             handleSubmit(e) {
                 e.preventDefault()
-                    axios.post('api/notes/add', {
+                    axios.post('api/notes', {
                         name: this.name,
                         text: this.text,
                     })

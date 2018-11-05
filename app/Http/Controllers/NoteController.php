@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
+    public function index()
+    {
+        return response()->json(Note::all()->toArray());
+    }
+
     public function store(Request $request)
     {
 
@@ -32,10 +37,7 @@ class NoteController extends Controller
         return response()->json(['success' => $success]);
     }
 
-    public function index()
-    {
-        return response()->json(Note::all()->toArray());
-    }
+
 
 //    public function getDetails()
 //    {
