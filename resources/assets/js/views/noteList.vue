@@ -11,7 +11,9 @@
                 <li v-for="note,index in notes" class="transit-1" :id="note.id">
 
                     <div class="small-card">
-                        {{ note.name }}
+                        {{ note.name }} <br/>
+                        <span v-model="note.text">{{ note.text}}</span><a v-if="note.limited === true" @click="showText($event,note)" href="#" class="btn btn-info btn-sm">Read More</a>
+
                     </div>
 
                 </li>
@@ -63,16 +65,22 @@
             }
         },
         methods : {
-//            addNew(id) {
-//                let user_id = 1
+            showText(e, note) {
+                let id = note.id;
+                  e.preventDefault();
+                  let note_id = id;
+
 //                let name = "New task"
 //                let category_id = this.categories[id].id
 //                let order = this.categories[id].tasks.length
-//
-//                axios.post('api/task', {user_id, name, order, category_id}).then(response => {
-//                    this.categories[id].tasks.push(response.data.data)
-//                })
-//            },
+
+                axios.get('api/notes/' + note_id, {}).then(response => {
+                   // this.categories[id].tasks.push(response.data.data)
+                    note.text=response.data.text;
+                    note.limited=false;
+                    console.log(response.data);
+                })
+            },
 //            loadTasks() {
 //                this.categories.map(category => {
 //                    axios.get(`api/category/${category.id}/tasks`).then(response => {
@@ -90,11 +98,15 @@
 
             axios.get('api/notes').then(response => {
                 response.data.forEach((data) => {
-                    this.notes.push({
+                    this.notes.push(
+                            data
+                            /*{
                         id : data.id,
                         name : data.name,
+                        text: data.text,
+                        created: data.created_at
                       //  tasks : []
-                    })
+                    }*/)
                 })
              //   this.loadTasks()
             })

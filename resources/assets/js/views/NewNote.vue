@@ -23,7 +23,7 @@
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary" @click="handleSubmit">
-                                    Register
+                                    Add note
                                 </button>
                             </div>
                         </div>
@@ -91,7 +91,8 @@
         },
         methods : {
             handleSubmit(e) {
-                e.preventDefault()
+                e.preventDefault();
+                //this.$router.go('/board');
                     axios.post('api/notes', {
                         name: this.name,
                         text: this.text,
@@ -103,7 +104,9 @@
 //                                if (localStorage.getItem('jwt') != null){
 //                                    this.$router.go('/board')
 //                                }
-                                console.log(response.data);
+                              //  console.log(response.data);
+
+                                this.$router.push('/notes');
                             })
                             .catch(error => {
                                 console.error(error);

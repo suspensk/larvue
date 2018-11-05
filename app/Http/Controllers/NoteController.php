@@ -11,7 +11,16 @@ class NoteController extends Controller
 {
     public function index()
     {
-        return response()->json(Note::all()->toArray());
+       // $notes = Note::all();
+        $notes= Note::orderBy('created_at', 'desc')->get();
+        foreach($notes as $key=>$note){
+            $text = str_limit($note->text, 5, '');
+            if($text != $note->text){
+                $notes[$key]['text'] = $text;
+                $notes[$key]['limited'] = true;
+            }
+        }
+        return response()->json($notes->toArray());
     }
 
     public function store(Request $request)
@@ -35,6 +44,11 @@ class NoteController extends Controller
         $success['text'] = $note->text;;
 
         return response()->json(['success' => $success]);
+    }
+
+    public function show(Note $note)
+    {
+        return response()->json($note);
     }
 
 
