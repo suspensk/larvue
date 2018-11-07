@@ -10006,7 +10006,8 @@ a.text-dark:focus {
   width: 100%;
 }
 
-.note-list li {
+.note-list li,
+.nav-link li {
   list-style-type: none;
 }
 

@@ -36,6 +36,7 @@
                 </div>
             </div>
         </div>
+        <notifications group="foo" />
     </div>
 </template>
 
@@ -51,7 +52,7 @@
         methods : {
             handleSubmit(e){
                 e.preventDefault()
-
+                let that = this;
                 if (this.password.length > 0) {
                     axios.post('api/login', {
                         email: this.email,
@@ -60,13 +61,22 @@
                       .then(response => {
                         localStorage.setItem('user',response.data.success.name)
                         localStorage.setItem('jwt',response.data.success.token)
+                     //     console.log(this.$jwt.decode());
+
 
                         if (localStorage.getItem('jwt') != null){
                             this.$router.go('/board')
                         }
                       })
                       .catch(function (error) {
-                        console.error(error);
+                          console.log(error.response.statusText)
+                          that.$notify({
+                              group: 'foo',
+                              title: 'Error',
+                              type: 'error',
+                              text: error.response.statusText
+                          });
+                      //  console.error(error);
                       });
                 }
             }

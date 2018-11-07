@@ -1,6 +1,7 @@
 <?php
 
 Route::post('login', 'UserController@login');
+Route::post('logout', 'UserController@logout');
 Route::post('register', 'UserController@register');
 //Route::post('notes/add', 'NoteController@store');
 //Route::get('notes', 'NoteController@index');
