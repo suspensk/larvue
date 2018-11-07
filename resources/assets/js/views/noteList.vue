@@ -10,6 +10,9 @@
             <ul class="note-list">
                 <li v-for="note,index in notes" class="transit-1" :id="note.id">
 
+                    TAGS:
+                    <div v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id">#{{tag.name}}</div>
+
                     <div class="small-card">
                         {{ note.name }} <br/>
                         <span v-model="note.text">{{ note.text}}</span><a v-if="note.limited === true" @click="showText($event,note)" href="#" class="btn btn-info btn-sm">Read More</a>

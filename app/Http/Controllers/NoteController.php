@@ -11,8 +11,7 @@ class NoteController extends Controller
 {
     public function index()
     {
-       // $notes = Note::all();
-        $notes= Note::orderBy('created_at', 'desc')->get();
+        $notes= Note::orderBy('created_at', 'desc')->with('tags')->get();
         foreach($notes as $key=>$note){
             $text = str_limit($note->text, 5, '');
             if($text != $note->text){
