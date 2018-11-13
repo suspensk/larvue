@@ -84,9 +84,9 @@ Vue.component('button-counter', {
     template: '<button v-on:click="count++">Счётчик кликов — {{ count }}</button>'
 })
 
-Vue.component('modal', {
-    template: '#modal-template'
-})
+// Vue.component('modal', {
+//     template: '#modal-template'
+// })
 
 const app = new Vue({
     el: '#app',
