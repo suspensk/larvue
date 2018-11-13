@@ -1,6 +1,49 @@
 <template>
     <div class="flex-center position-ref full-height">
+        <script type="text/x-template" id="modal-template">
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-container">
+
+                            <div class="modal-header">
+                                <slot name="header">
+                                    default header
+                                </slot>
+                            </div>
+
+                            <div class="modal-body">
+                                <slot name="body">
+                                    default body
+                                </slot>
+                            </div>
+
+                            <div class="modal-footer">
+                                <slot name="footer">
+                                    default footer
+                                    <button class="modal-default-button" @click="$emit('close')">
+                                        OK
+                                    </button>
+                                </slot>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </script>
         <div class="container">
+            <div id="components-demo">
+                <button-counter></button-counter>
+                <button-counter></button-counter>
+                <button id="show-modal" @click="showModal = true">Show Modal</button>
+                <modal v-if="showModal" @close="showModal = false">
+                    <!--
+                      you can use custom content here to overwrite
+                      default content
+                    -->
+                    <h3 slot="header">custom header</h3>
+                </modal>
+            </div>
             <div  class="m-b-md">
 
                 <div class="card-body">
@@ -31,9 +74,9 @@
                 </div>
             </div>
         </div>
+
     </div>
 </template>
-
 
 <style scoped>
 .full-height {
@@ -87,6 +130,7 @@
             return {
                 name : "",
                 text : "",
+                showModal: false
             }
         },
         methods : {

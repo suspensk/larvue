@@ -75,6 +75,18 @@ const router = new VueRouter({
         },
     ],
 });
+Vue.component('button-counter', {
+    data: function () {
+        return {
+            count: 0
+        }
+    },
+    template: '<button v-on:click="count++">Счётчик кликов — {{ count }}</button>'
+})
+
+Vue.component('modal', {
+    template: '#modal-template'
+})
 
 const app = new Vue({
     el: '#app',
