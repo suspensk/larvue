@@ -17,11 +17,12 @@
                     </div>
 
                     <div class="modal-footer">
+                        <!--<button class="modal-default-button" @click="$emit('close')">
+                                OK
+                            </button>-->
                         <slot name="footer">
                             default footer
-                            <button class="modal-default-button" @click="$emit('close')">
-                                OK
-                            </button>
+
                         </slot>
                     </div>
                 </div>
@@ -97,5 +98,9 @@
     }
 </style>
 
-
+<script>
+    export default {
+        props: ['button'],
+    }
+</script>
 

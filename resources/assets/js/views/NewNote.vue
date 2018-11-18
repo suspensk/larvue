@@ -4,13 +4,19 @@
             <div id="components-demo">
                 <button-counter></button-counter>
                 <button-counter></button-counter>
-                <button id="show-modal" @click="showModal = true">Show Modal</button>
+                <button id="show-modal" @click="showModal = true">add tag</button>
                 <modal v-if="showModal" @close="showModal = false">
                     <!--
                       you can use custom content here to overwrite
                       default content
                     -->
-                    <h3 slot="header">mmmmmcustom header</h3>
+                    <span slot="body"><input type="text" placeholder="tag"></span>
+                    <span slot="footer">
+                         <button class="modal-default-button" @click="hideModal">
+                          OK
+                         </button>
+                    </span>
+                    <h3 slot="header">Adding new tag</h3>
                 </modal>
             </div>
             <div  class="m-b-md">
@@ -126,7 +132,12 @@
                                 console.error(error);
                             });
 
-            }
+            },
+            hideModal() {
+                alert(6);
+             //   this.$emit('close')
+                this.showModal = false
+            },
         },
         components: {
             Modal
