@@ -10,7 +10,7 @@
                       you can use custom content here to overwrite
                       default content
                     -->
-                    <span slot="body"><input type="text" placeholder="tag"></span>
+                    <span slot="body"><input v-model="newTag" type="text" placeholder="tag"></span>
                     <span slot="footer">
                          <button class="modal-default-button" @click="hideModal">
                           OK
@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-
+        <notifications group="foo" />
     </div>
 </template>
 
@@ -106,7 +106,8 @@
             return {
                 name : "",
                 text : "",
-                showModal: false
+                showModal: false,
+                newTag: ""
             }
         },
         methods : {
@@ -134,8 +135,31 @@
 
             },
             hideModal() {
-                alert(6);
-             //   this.$emit('close')
+                let that = this;
+                axios.post('api/tags', {
+                    name: this.newTag,
+                })
+                        .then(response => {
+//
+                             console.log(response.data);
+                            that.$notify({
+                                group: 'foo',
+                                title: 'Success',
+                                type: 'success',
+                                text: 'added successfully'
+                            });
+
+                        //    this.$router.push('/notes');
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            that.$notify({
+                                group: 'foo',
+                                title: 'Error',
+                                type: 'error',
+                                text: error.response.statusText
+                            });
+                        });
                 this.showModal = false
             },
         },
