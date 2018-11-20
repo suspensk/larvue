@@ -12,7 +12,7 @@ class TagController extends Controller
 {
     public function index()
     {
-//        $notes= Note::orderBy('created_at', 'desc')->with('tags')->get();
+        $tag= Tag::orderBy('created_at', 'desc')->get();
 //        foreach($notes as $key=>$note){
 //            $text = str_limit($note->text, 5, '');
 //            if($text != $note->text){
@@ -20,7 +20,7 @@ class TagController extends Controller
 //                $notes[$key]['limited'] = true;
 //            }
 //        }
-//        return response()->json($notes->toArray());
+        return response()->json($tag->toArray());
     }
 
     public function store(Request $request)

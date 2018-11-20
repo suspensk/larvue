@@ -23,6 +23,13 @@
 
                 <div class="card-body">
                     <form method="POST" action="/notes/add">
+                        <!--<div class="form-group row">-->
+                            <!--<label for="name" class="col-md-4 col-form-label text-md-right">Tags</label>-->
+
+                            <!--<div class="col-md-6">-->
+                                <!--<input id="name" type="text" class="form-control" v-model="name" required autofocus>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">Title</label>
 
@@ -50,6 +57,14 @@
             </div>
         </div>
         <notifications group="foo" />
+        <autocomplete
+                url="/api/tags"
+                anchor="name"
+                label=""
+                :on-select="getData"
+                :onAjaxLoaded="ajaxLoaded"
+        >
+        </autocomplete>
     </div>
 </template>
 
@@ -100,7 +115,9 @@
 
 
 <script>
-    import Modal from './ModalWindow'
+    import Modal from './ModalWindow';
+    import Autocomplete from 'vue2-autocomplete-js';
+    require('vue2-autocomplete-js/dist/style/vue2-autocomplete.css')
     export default {
         data(){
             return {
@@ -119,14 +136,6 @@
                         text: this.text,
                     })
                             .then(response => {
-//                                localStorage.setItem('user',response.data.success.name)
-//                                localStorage.setItem('jwt',response.data.success.token)
-//
-//                                if (localStorage.getItem('jwt') != null){
-//                                    this.$router.go('/board')
-//                                }
-                              //  console.log(response.data);
-
                                 this.$router.push('/notes');
                             })
                             .catch(error => {
@@ -162,9 +171,18 @@
                         });
                 this.showModal = false
             },
+            getData(obj){
+                console.log('data:',obj);
+            },
+            ajaxLoaded(obj){
+                console.log('mydata:',obj);
+             //   let response = JSON.parse(obj);
+                // The options to pass in the autocomplete props
+                this.options = obj;
+            }
         },
         components: {
-            Modal
+            Modal, Autocomplete
         }
 
     }
