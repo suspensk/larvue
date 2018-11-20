@@ -23,13 +23,21 @@
 
                 <div class="card-body">
                     <form method="POST" action="/notes/add">
-                        <!--<div class="form-group row">-->
-                            <!--<label for="name" class="col-md-4 col-form-label text-md-right">Tags</label>-->
+                        <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label text-md-right">Tags</label>
 
-                            <!--<div class="col-md-6">-->
-                                <!--<input id="name" type="text" class="form-control" v-model="name" required autofocus>-->
-                            <!--</div>-->
-                        <!--</div>-->
+                        <div class="col-md-6">
+                            <autocomplete
+                                    className="tags"
+                                    url="/api/tags"
+                                    anchor="name"
+                                    label=""
+                                    :on-select="setTag"
+                                    :onAjaxLoaded="ajaxLoaded"
+                            >
+                            </autocomplete>
+                        </div>
+                        </div>
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">Title</label>
 
@@ -57,14 +65,6 @@
             </div>
         </div>
         <notifications group="foo" />
-        <autocomplete
-                url="/api/tags"
-                anchor="name"
-                label=""
-                :on-select="getData"
-                :onAjaxLoaded="ajaxLoaded"
-        >
-        </autocomplete>
     </div>
 </template>
 
@@ -124,7 +124,8 @@
                 name : "",
                 text : "",
                 showModal: false,
-                newTag: ""
+                newTag: "",
+                tags: []
             }
         },
         methods : {
@@ -134,6 +135,7 @@
                     axios.post('api/notes', {
                         name: this.name,
                         text: this.text,
+                        tags: this.tags
                     })
                             .then(response => {
                                 this.$router.push('/notes');
@@ -171,8 +173,9 @@
                         });
                 this.showModal = false
             },
-            getData(obj){
-                console.log('data:',obj);
+            setTag(obj){
+                this.tags.push(obj.id)
+                console.log('xdata:',this.tags);
             },
             ajaxLoaded(obj){
                 console.log('mydata:',obj);
@@ -187,3 +190,7 @@
 
     }
 </script>
+<style>
+    .tags-list ul li a {background-color: #ffc107  }
+    .tags-list ul {z-index: 1;}
+</style>
