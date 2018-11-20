@@ -38,6 +38,8 @@ class NoteController extends Controller
        // $input['password'] = bcrypt($input['password']);
 
         $note = Note::create($input);
+        $note->tags()->attach($request->tags);
+        $note->save();
      //   $success['token'] = $user->createToken('MyApp')->accessToken;
         $success['name'] = $note->name;
         $success['text'] = $note->text;;
