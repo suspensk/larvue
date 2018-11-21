@@ -25,15 +25,19 @@
                     <form method="POST" action="/notes/add">
                         <div class="form-group row">
                         <label for="name" class="col-md-4 col-form-label text-md-right">Tags</label>
-
                         <div class="col-md-6">
+                            <span v-for="tag in tags">
+                                <a href="#" @click="removeTag(tag.id, $event)"> x </a><span>{{ tag.name }}</span>&nbsp;&nbsp;
+                            </span>
                             <autocomplete
+                                    ref="autocomplete"
                                     className="tags"
                                     url="/api/tags"
                                     anchor="name"
                                     label=""
-                                    :on-select="setTag"
+                                    :onSelect="setTag"
                                     :onAjaxLoaded="ajaxLoaded"
+                                    placeholder="placeholder"
                             >
                             </autocomplete>
                         </div>
@@ -133,10 +137,11 @@
             handleSubmit(e) {
                 e.preventDefault();
                 //this.$router.go('/board');
+                    let tags = this.tags.map(a => a.id);
                     axios.post('api/notes', {
                         name: this.name,
                         text: this.text,
-                        tags: this.tags
+                        tags: tags
                     })
                             .then(response => {
                                 this.$router.push('/notes');
@@ -152,7 +157,6 @@
                     name: this.newTag,
                 })
                         .then(response => {
-//
                              console.log(response.data);
                             that.$notify({
                                 group: 'foo',
@@ -174,9 +178,20 @@
                         });
                 this.showModal = false
             },
-            setTag(obj){
-                this.tags.push(obj.id)
-                console.log('xdata:',this.tags);
+            setTag (obj) {
+                this.tags.push(obj);
+             //   console.log(this.$root)
+             //   this.$nextTick(function () {
+                //    $('.tags-input').val('');
+               //     this.$refs.autocomplete.setValue ('-')
+                //  })
+                this.$refs.autocomplete.setValue('');
+            },
+            removeTag(id, e){
+                e.preventDefault();
+                this.tags = this.tags.filter(function( obj ) {
+                    return obj.id !== id;
+                });
             },
             ajaxLoaded(obj){
                 console.log('mydata:',obj);

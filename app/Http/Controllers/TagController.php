@@ -10,17 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class TagController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tag= Tag::orderBy('created_at', 'desc')->get();
-//        foreach($notes as $key=>$note){
-//            $text = str_limit($note->text, 5, '');
-//            if($text != $note->text){
-//                $notes[$key]['text'] = $text;
-//                $notes[$key]['limited'] = true;
-//            }
-//        }
-        return response()->json($tag->toArray());
+        if (isset($request->q)){
+            $tags= Tag::where('name', 'like', '%' . $request->q .'%')->orderBy('created_at', 'desc')->get();
+        } else {
+            $tags= Tag::orderBy('created_at', 'desc')->get();
+        }
+
+        return response()->json($tags->toArray());
     }
 
     public function store(Request $request)
