@@ -26,7 +26,7 @@ class NoteController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+         //   'name' => 'required',
             'text' => 'required'
         ]);
 
@@ -41,7 +41,7 @@ class NoteController extends Controller
         $note->tags()->attach($request->tags);
         $note->save();
      //   $success['token'] = $user->createToken('MyApp')->accessToken;
-        $success['name'] = $note->name;
+      //  $success['name'] = $note->name;
         $success['text'] = $note->text;;
 
         return response()->json(['success' => $success]);
