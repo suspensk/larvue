@@ -8,7 +8,8 @@
                         :hideChangeButton="true"
                         :toggleAspectRatio="false"
                         :changeOnClick="true"
-                        @change="onChange"
+                        @change="onChangeImage"
+                        @remove="onRemoveImage"
                         width="400"
                         height="300"
                         margin="16"
@@ -42,7 +43,7 @@
                 <div class="card-body">
                     <form method="POST" action="/notes/add">
                         <div class="form-group row">
-                        <label for="name" class="col-md-4 col-form-label text-md-right">Tags</label>
+                        <label class="col-md-4 col-form-label text-md-right">Tags</label>
                         <div class="col-md-6">
                             <span v-for="tag in tags">
                                 <a href="#" @click="removeTag(tag.id, $event)"> x </a><span>{{ tag.name }}</span>&nbsp;&nbsp;
@@ -141,30 +142,20 @@
                 text : "",
                 showModal: false,
                 newTag: "",
-                tags: []
+                tags: [],
+                image: ""
             }
         },
         methods : {
-            onChange (image) {
-                console.log('New picture selected!')
+            onRemoveImage (image) {
+                this.image = "";
+            },
+            onChangeImage (image) {
+             //   console.log('New picture selected!')
                 if (image) {
-                    console.log('Picture loaded.')
                     this.image = image;
+                //    console.log('Picture loaded.')
 
-                    let picture = this.$refs.pictureInput.file;
-                    var fd = new FormData();
-                    fd.append('image', picture);
-                    console.log(picture);
-                    const config = {
-                        headers: { 'content-type': 'multipart/form-data' }
-                    }
-                    axios.post('api/notes', fd, config)
-                            .then(response => {
-                              //  this.$router.push('/notes');
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
 
 
                 } else {
@@ -174,18 +165,32 @@
             handleSubmit(e) {
                 e.preventDefault();
                 //this.$router.go('/board');
-                    let tags = this.tags.map(a => a.id);
+                let tags = this.tags.map(a => a.id);
+                console.log(this.image)
+                if(this.image!= ""){
+                    let picture = this.$refs.pictureInput.file;
+                    var fd = new FormData();
+                    fd.append('image', picture);
+                    axios.post('api/notes', fd, {headers: { 'content-type': 'multipart/form-data' }})
+                            .then(response => {
+                                //  this.$router.push('/notes');
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                }
+                return;
                     axios.post('api/notes', {
                       //  name: this.name,
                         text: this.text,
                         tags: tags
                     })
-                            .then(response => {
-                                this.$router.push('/notes');
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
+                        .then(response => {
+                            this.$router.push('/notes');
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
 
             },
             hideModal() {
