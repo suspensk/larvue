@@ -2,6 +2,24 @@
     <div class="flex-center position-ref full-height">
         <div class="container">
             <div id="components-demo">
+                <picture-input
+                        ref="pictureInput"
+                        :removable="true"
+                        :hideChangeButton="true"
+                        :toggleAspectRatio="false"
+                        :changeOnClick="true"
+                        @change="onChange"
+                        width="400"
+                        height="300"
+                        margin="16"
+                        accept="image/jpeg,image/png"
+                        size="15"
+                        buttonClass="btn"
+                        :customStrings="{
+        upload: '<h1>Bummer!</h1>',
+        drag: 'Drag a 😺 GIF or GTFO'
+      }">
+                </picture-input>
                 <button-counter></button-counter>
                 <button-counter></button-counter>
                 <button id="show-modal" @click="showModal = true">add tag</button>
@@ -114,6 +132,7 @@
 <script>
     import Modal from './ModalWindow';
     import Autocomplete from 'vue2-autocomplete-js';
+    import PictureInput from 'vue-picture-input';
     require('vue2-autocomplete-js/dist/style/vue2-autocomplete.css')
     export default {
         data(){
@@ -126,6 +145,32 @@
             }
         },
         methods : {
+            onChange (image) {
+                console.log('New picture selected!')
+                if (image) {
+                    console.log('Picture loaded.')
+                    this.image = image;
+
+                    let picture = this.$refs.pictureInput.file;
+                    var fd = new FormData();
+                    fd.append('image', picture);
+                    console.log(picture);
+                    const config = {
+                        headers: { 'content-type': 'multipart/form-data' }
+                    }
+                    axios.post('api/notes', fd, config)
+                            .then(response => {
+                              //  this.$router.push('/notes');
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+
+
+                } else {
+                    console.log('FileReader API not supported: use the <form>, Luke!')
+                }
+            },
             handleSubmit(e) {
                 e.preventDefault();
                 //this.$router.go('/board');
@@ -193,7 +238,7 @@
             }
         },
         components: {
-            Modal, Autocomplete
+            Modal, Autocomplete, PictureInput
         }
 
     }
