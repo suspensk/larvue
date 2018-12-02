@@ -22,22 +22,57 @@ class NoteController extends Controller
         return response()->json($notes->toArray());
     }
 
+    public function store(Request $request)
+    {
+        throw new \App\Exceptions\CustomException('Something Went Wrong.');
+        $input = $request->all();
+
+        if(!empty($_FILES)){
+            $this->uploadFiles();
+        }
+
+
+        $validator = Validator::make($request->all(), [
+         //   'name' => 'required',
+            'text' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+
+
+       // $input['password'] = bcrypt($input['password']);
+
+        $note = Note::create($input);
+        $note->tags()->attach($request->tags);
+        $note->save();
+        $success['text'] = $note->text;;
+
+        return response()->json(['success' => $success]);
+    }
+
+    public function show(Note $note)
+    {
+        return response()->json($note);
+    }
+
     public function uploadFiles(){
         $target_dir = __DIR__ . "/../../../public/uploads/";
         $target_file = $target_dir . basename($_FILES["image"]["name"]);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
-     //   if(isset($_POST["submit"])) {
-            $check = getimagesize($_FILES["image"]["tmp_name"]);
-            if($check !== false) {
-                echo "File is an image - " . $check["mime"] . ".";
-                $uploadOk = 1;
-            } else {
-                echo "File is not an image.";
-                $uploadOk = 0;
-            }
-    //    }
+        //   if(isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["image"]["tmp_name"]);
+        if($check !== false) {
+            echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+            echo "File is not an image.";
+            $uploadOk = 0;
+        }
+        //    }
 // Check if file already exists
         if (file_exists($target_file)) {
             echo "Sorry, file already exists.";
@@ -69,41 +104,6 @@ class NoteController extends Controller
                 echo "Sorry, there was an error uploading your file.";
             }
         }
-    }
-
-    public function store(Request $request)
-    {
-        if(!empty($_FILES)){
-            $this->uploadFiles();
-        }
-        var_dump($_FILES);
-        exit();
-
-        $validator = Validator::make($request->all(), [
-         //   'name' => 'required',
-            'text' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
-        }
-
-        $input = $request->all();
-       // $input['password'] = bcrypt($input['password']);
-
-        $note = Note::create($input);
-        $note->tags()->attach($request->tags);
-        $note->save();
-     //   $success['token'] = $user->createToken('MyApp')->accessToken;
-      //  $success['name'] = $note->name;
-        $success['text'] = $note->text;;
-
-        return response()->json(['success' => $success]);
-    }
-
-    public function show(Note $note)
-    {
-        return response()->json($note);
     }
 
 
