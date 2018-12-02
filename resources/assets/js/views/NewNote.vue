@@ -166,31 +166,40 @@
                 e.preventDefault();
                 //this.$router.go('/board');
                 let tags = this.tags.map(a => a.id);
-                console.log(this.image)
-                if(this.image!= ""){
+                var fd = new FormData();
+                if(this.image!= "") {
                     let picture = this.$refs.pictureInput.file;
-                    var fd = new FormData();
                     fd.append('image', picture);
+                }
+                    fd.append('text', this.text);
+                    fd.append('tags', tags);
+
                     axios.post('api/notes', fd, {headers: { 'content-type': 'multipart/form-data' }})
                             .then(response => {
                                 //  this.$router.push('/notes');
                             })
                             .catch(error => {
+                                that.$notify({
+                                    group: 'foo',
+                                    title: 'Error',
+                                    type: 'error',
+                                    text: error.response.statusText
+                                });
                                 console.error(error);
                             });
-                }
-                return;
-                    axios.post('api/notes', {
-                      //  name: this.name,
-                        text: this.text,
-                        tags: tags
-                    })
-                        .then(response => {
-                            this.$router.push('/notes');
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
+
+
+//                    axios.post('api/notes', {
+//                      //  name: this.name,
+//                        text: this.text,
+//                        tags: tags
+//                    })
+//                        .then(response => {
+//                        //    this.$router.push('/notes');
+//                        })
+//                        .catch(error => {
+//                            console.error(error);
+//                        });
 
             },
             hideModal() {
