@@ -29,11 +29,15 @@ class CustomException extends Exception
      */
     public function render($request)
     {
-        return response()->view(
+        return response()->json(['error' => $this->getMessage()], 403);
+        /*
+         * for page error
+         *
+         * return response()->view(
             'errors.custom',
             array(
                 'exception' => $this
             )
-        );
+        );*/
     }
 }

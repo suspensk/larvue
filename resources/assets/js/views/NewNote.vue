@@ -164,6 +164,7 @@
             },
             handleSubmit(e) {
                 e.preventDefault();
+                let that = this;
                 //this.$router.go('/board');
                 let tags = this.tags.map(a => a.id);
                 var fd = new FormData();
@@ -183,9 +184,9 @@
                                     group: 'foo',
                                     title: 'Error',
                                     type: 'error',
-                                    text: error.response.statusText
+                                    text: error.response.data.error
                                 });
-                                console.error(error);
+                              //  console.error(error.response.data.error);
                             });
 
 

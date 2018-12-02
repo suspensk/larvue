@@ -24,7 +24,6 @@ class NoteController extends Controller
 
     public function store(Request $request)
     {
-        throw new \App\Exceptions\CustomException('Something Went Wrong.');
         $input = $request->all();
 
         if(!empty($_FILES)){
@@ -33,16 +32,13 @@ class NoteController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-         //   'name' => 'required',
             'text' => 'required'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            $errorString = implode("<br/>",$validator->messages()->all());
+            return response()->json(['error' => $errorString], 403);
         }
-
-
-       // $input['password'] = bcrypt($input['password']);
 
         $note = Note::create($input);
         $note->tags()->attach($request->tags);
@@ -61,21 +57,22 @@ class NoteController extends Controller
         $target_dir = __DIR__ . "/../../../public/uploads/";
         $target_file = $target_dir . basename($_FILES["image"]["name"]);
         $uploadOk = 1;
+        $errorMsg = "";
         $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
         //   if(isset($_POST["submit"])) {
         $check = getimagesize($_FILES["image"]["tmp_name"]);
         if($check !== false) {
-            echo "File is an image - " . $check["mime"] . ".";
+        //    echo "File is an image - " . $check["mime"] . ".";
             $uploadOk = 1;
         } else {
-            echo "File is not an image.";
+            $errorMsg .= "File is not an image. <br/>";
             $uploadOk = 0;
         }
         //    }
 // Check if file already exists
         if (file_exists($target_file)) {
-            echo "Sorry, file already exists.";
+            $errorMsg .=  "Sorry, file already exists. <br/>";
             $uploadOk = 0;
         }
 // Check file size
@@ -84,24 +81,26 @@ class NoteController extends Controller
         define('GB', 1073741824);
         define('TB', 1099511627776);
         if ($_FILES["image"]["size"] > 15*MB) {
-            echo "Sorry, your file is too large.";
+            $errorMsg .= "Sorry, your file is too large. <br/>";
             $uploadOk = 0;
         }
 // Allow certain file formats
         if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
             && $imageFileType != "gif" ) {
-            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $errorMsg .=  "Sorry, only JPG, JPEG, PNG & GIF files are allowed. <br/>";
             $uploadOk = 0;
         }
 // Check if $uploadOk is set to 0 by an error
         if ($uploadOk == 0) {
-            echo "Sorry, your file was not uploaded.";
+            $errorMsg .= "Sorry, your file was not uploaded.";
+            throw new \App\Exceptions\CustomException($errorMsg);
 // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                echo "The file ". basename( $_FILES["image"]["name"]). " has been uploaded.";
+              //  echo "The file ". basename( $_FILES["image"]["name"]). " has been uploaded.";
             } else {
-                echo "Sorry, there was an error uploading your file.";
+               // echo "Sorry, there was an error uploading your file.";
+                throw new \App\Exceptions\CustomException('Sorry, there was an error uploading your file.');
             }
         }
     }
