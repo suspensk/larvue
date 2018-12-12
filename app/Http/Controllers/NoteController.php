@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Note;
+use App\Image;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,9 +26,15 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-
+        $file_flag = 0;
         if(!empty($request->file('image'))){
-            $this->uploadFiles($request);
+            $file = $request->file('image');
+            $target_dir = __DIR__ . "/../../../public/uploads/";
+            $ext = $file->getClientOriginalExtension();
+            $user= $request->user();
+            $target_file_name = base64_encode('user' .  $user['id'] . 'time' . time()) . '.' . $ext ;
+            $this->uploadFiles($file, $target_dir, $target_file_name);
+            $file_flag = 1;
         }
 
 
@@ -43,6 +50,16 @@ class NoteController extends Controller
         $note = Note::create($input);
         $note->tags()->attach($request->tags);
         $note->save();
+
+        var_dump($note->id);
+        if($file_flag){
+            Image::create([
+                'original_name' => $file->getClientOriginalName(),
+                'name' => $target_file_name,
+                'note_id' => $note->id
+            ]);
+        }
+
         $success['text'] = $note->text;;
 
         return response()->json(['success' => $success]);
@@ -53,14 +70,14 @@ class NoteController extends Controller
         return response()->json($note);
     }
 
-    public function uploadFiles(Request $request){
-        $file = $request->file('image');
+    public function uploadFiles($file, $target_dir, $target_file_name){
+      //  $file = $request->file('image');
         $realPath = $file->getRealPath();
-        $target_dir = __DIR__ . "/../../../public/uploads/";
-        $ext = $file->getClientOriginalExtension();
-        $user= $request->user();
+     //   $target_dir = __DIR__ . "/../../../public/uploads/";
+     //   $ext = $file->getClientOriginalExtension();
+      //  $user= $request->user();
 
-        $target_file_name = 'user' .  $user['id'] . 'time' . time() . '.' . $ext ;
+      //  $target_file_name = 'user' .  $user['id'] . 'time' . time() . '.' . $ext ;
         $target_file = $target_dir . $target_file_name;
         $uploadOk = 1;
         $errorMsg = "";
@@ -103,13 +120,14 @@ class NoteController extends Controller
 // if everything is ok, try to upload file
         } else {
         //    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            if ($file->move($target_dir, 'user' .  $user['id'] . 'time' . time() . '.' . $ext )) {
+            if ($file->move($target_dir, $target_file_name )) {
               //  echo "The file ". basename( $_FILES["image"]["name"]). " has been uploaded.";
             } else {
                // echo "Sorry, there was an error uploading your file.";
                 throw new \App\Exceptions\CustomException('Sorry, there was an error uploading your file.');
             }
         }
+        return $target_file;
     }
 
 

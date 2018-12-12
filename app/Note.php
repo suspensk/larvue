@@ -43,8 +43,8 @@ class Note extends Model
         return $this->belongsToMany(Tag::class);
     }
 
-   /* public function images()
+    public function images()
     {
         return $this->hasMany(Image::class);
-    }*/
+    }
 }
