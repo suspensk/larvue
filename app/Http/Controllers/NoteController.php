@@ -26,8 +26,8 @@ class NoteController extends Controller
     {
         $input = $request->all();
 
-        if(!empty($_FILES)){
-            $this->uploadFiles();
+        if(!empty($request->file('image'))){
+            $this->uploadFiles($request);
         }
 
 
@@ -53,15 +53,21 @@ class NoteController extends Controller
         return response()->json($note);
     }
 
-    public function uploadFiles(){
+    public function uploadFiles(Request $request){
+        $file = $request->file('image');
+        $realPath = $file->getRealPath();
         $target_dir = __DIR__ . "/../../../public/uploads/";
-        $target_file = $target_dir . basename($_FILES["image"]["name"]);
+        $ext = $file->getClientOriginalExtension();
+        $user= $request->user();
+
+        $target_file_name = 'user' .  $user['id'] . 'time' . time() . '.' . $ext ;
+        $target_file = $target_dir . $target_file_name;
         $uploadOk = 1;
         $errorMsg = "";
         $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
         //   if(isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["image"]["tmp_name"]);
+        $check = getimagesize($realPath);
         if($check !== false) {
         //    echo "File is an image - " . $check["mime"] . ".";
             $uploadOk = 1;
@@ -80,7 +86,7 @@ class NoteController extends Controller
         define('MB', 1048576);
         define('GB', 1073741824);
         define('TB', 1099511627776);
-        if ($_FILES["image"]["size"] > 15*MB) {
+        if ($file->getClientSize() > 15*MB) {
             $errorMsg .= "Sorry, your file is too large. <br/>";
             $uploadOk = 0;
         }
@@ -96,7 +102,8 @@ class NoteController extends Controller
             throw new \App\Exceptions\CustomException($errorMsg);
 // if everything is ok, try to upload file
         } else {
-            if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+        //    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+            if ($file->move($target_dir, 'user' .  $user['id'] . 'time' . time() . '.' . $ext )) {
               //  echo "The file ". basename( $_FILES["image"]["name"]). " has been uploaded.";
             } else {
                // echo "Sorry, there was an error uploading your file.";
