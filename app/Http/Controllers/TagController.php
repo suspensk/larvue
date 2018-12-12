@@ -34,8 +34,9 @@ class TagController extends Controller
         }
 
         $input = $request->all();
+        $user= $request->user();
        // $input['password'] = bcrypt($input['password']);
-
+        $input['user_id'] = $user['id'];
         $tag = Tag::create($input);
      //   $success['token'] = $user->createToken('MyApp')->accessToken;
         $success['name'] = $tag->name;
