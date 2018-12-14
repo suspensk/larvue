@@ -7,6 +7,10 @@
                     <span v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id"><a href="#">#{{tag.name}}</a>&nbsp;&nbsp;</span>
 
                     <div class="small-card">
+                        <span v-for="image in note.images">
+                            <img :src="'/uploads/' + image.name" height="100">
+                        </span>
+
                         <span v-model="note.text">{{ note.text}}</span><a v-if="note.limited === true" @click="showText($event,note)" href="#" class="btn btn-info btn-sm">Read More</a>
 
                     </div>

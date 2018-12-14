@@ -12,7 +12,7 @@ class NoteController extends Controller
 {
     public function index()
     {
-        $notes= Note::orderBy('created_at', 'desc')->with('tags')->get();
+        $notes= Note::orderBy('created_at', 'desc')->with('tags')->with('images')->get();
         foreach($notes as $key=>$note){
             $text = str_limit($note->text, 5, '');
             if($text != $note->text){
