@@ -90,6 +90,7 @@
 
         },
         mounted() {
+        //    this.$zoom('/uploads/dXNlcjJ0aW1lMTU0NDY0NDc2Nw==.PNG');
             let token = localStorage.getItem('jwt')
 
             axios.defaults.headers.common['Content-Type'] = 'application/json'

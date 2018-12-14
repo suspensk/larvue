@@ -27,10 +27,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueJWT from 'vuejs-jwt'
 import Notifications from 'vue-notification'
+import zoom from 'vue-image-zoom';
+import 'vue-image-zoom/dist/vue-image-zoom.css';
 
 Vue.use(VueJWT, {keyName : 'jwt'});
 Vue.use(VueRouter);
 Vue.use(Notifications);
+Vue.use(zoom);
 
 import App from './views/App'
 import Dashboard from './views/Board'
