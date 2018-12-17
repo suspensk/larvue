@@ -57,6 +57,7 @@
                                     :onSelect="setTag"
                                     :onAjaxLoaded="ajaxLoaded"
                                     placeholder="placeholder"
+                                    :customHeaders="myHeaders"
                             >
                             </autocomplete>
                         </div>
@@ -145,6 +146,13 @@
                 tags: [],
                 image: ""
             }
+        },
+        computed: {
+          myHeaders() {
+              return {
+                  Authorization: 'Bearer ' + localStorage.getItem('jwt')
+              };
+          }
         },
         methods : {
             onRemoveImage (image) {
