@@ -121,6 +121,14 @@ class NoteController extends Controller
         } else {
         //    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
             if ($file->move($target_dir, $target_file_name )) {
+                if (copy($target_dir . $target_file_name, $target_dir . '200-' . $target_file_name)) {
+                    $this->resize_image($target_dir . '200-' . $target_file_name, 200);
+                }
+                if (copy($target_dir . $target_file_name, $target_dir . '540-' . $target_file_name)) {
+                    $this->resize_image($target_dir . '540-' . $target_file_name, 540);
+                }
+
+
               //  echo "The file ". basename( $_FILES["image"]["name"]). " has been uploaded.";
             } else {
                // echo "Sorry, there was an error uploading your file.";
@@ -130,7 +138,51 @@ class NoteController extends Controller
         return $target_file;
     }
 
+    function resize_image($photo, $new_width) {
+        // Get the image info from the photo
+        $image_info = getimagesize($photo);
+        $width = $image_info[0];
+        $height = $new_height = $image_info[1];
+        $type = $image_info[2];
 
+// Load the image
+        switch ($type)
+        {
+            case IMAGETYPE_JPEG:
+                $image = imagecreatefromjpeg($photo);
+                break;
+            case IMAGETYPE_GIF:
+                $image = imagecreatefromgif($photo);
+                break;
+            case IMAGETYPE_PNG:
+                $image = imagecreatefrompng($photo);
+                break;
+            default:
+                die('Error loading '.$photo.' - File type '.$type.' not supported');
+        }
+
+// Create a new, resized image
+    //    $new_width = 180;
+        $new_height = $height / ($width / $new_width);
+        $new_image = imagecreatetruecolor($new_width, $new_height);
+        imagecopyresampled($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+// Save the new image over the top of the original photo
+        switch ($type)
+        {
+            case IMAGETYPE_JPEG:
+                imagejpeg($new_image, $photo, 100);
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($new_image, $photo);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($new_image, $photo);
+                break;
+            default:
+                die('Error saving image: '.$photo);
+        }
+    }
 
 //    public function getDetails()
 //    {

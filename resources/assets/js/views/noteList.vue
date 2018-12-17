@@ -8,7 +8,8 @@
 
                     <div class="small-card">
                         <span v-for="image in note.images">
-                            <img :src="'/uploads/' + image.name" height="100">
+                            <img v-if="mobile == 1" @click="zoomImage('/uploads/' + image.name)" :src="'/uploads/200-' + image.name" >
+                            <img v-else @click="zoomImage('/uploads/' + image.name)" :src="'/uploads/540-' + image.name" >
                         </span>
 
                         <span v-model="note.text">{{ note.text}}</span><a v-if="note.limited === true" @click="showText($event,note)" href="#" class="btn btn-info btn-sm">Read More</a>
@@ -64,6 +65,9 @@
             }
         },
         methods : {
+            zoomImage(file){
+                    this.$zoom(file);
+            },
             showText(e, note) {
                 let id = note.id;
                   e.preventDefault();
@@ -90,7 +94,7 @@
 
         },
         mounted() {
-        //    this.$zoom('/uploads/dXNlcjJ0aW1lMTU0NDY0NDc2Nw==.PNG');
+
             let token = localStorage.getItem('jwt')
 
             axios.defaults.headers.common['Content-Type'] = 'application/json'
