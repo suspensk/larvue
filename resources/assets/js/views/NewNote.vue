@@ -21,8 +21,8 @@
         drag: 'Drag a 😺 GIF or GTFO'
       }">
                 </picture-input>
-                <button-counter></button-counter>
-                <button-counter></button-counter>
+               <!-- <button-counter></button-counter>
+                <button-counter></button-counter>-->
                 <button id="show-modal" @click="showModal = true">add tag</button>
                 <modal v-if="showModal" @close="showModal = false">
                     <!--
@@ -69,6 +69,17 @@
                                 <textarea rows="8" id="text" type="text" class="form-control" v-model="text" required></textarea>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                            <label for="privacy">Privacy settings:</label>
+                            <select name="privacy" class="form-control" id="privacy" v-model="privacy">
+                                <option value="0">public</option>
+                                <option value="1">protected</option>
+                                <option value="2">private</option>
+                            </select>
+                                </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary" @click="handleSubmit">
@@ -141,6 +152,7 @@
             return {
               //  name : "",
                 text : "",
+                privacy: 0,
                 showModal: false,
                 newTag: "",
                 tags: [],
@@ -181,6 +193,7 @@
                     fd.append('image', picture);
                 }
                     fd.append('text', this.text);
+                    fd.append('privacy', this.privacy);
                     fd.append('tags', tags);
 
                     axios.post('api/notes', fd, {headers: { 'content-type': 'multipart/form-data' }})
@@ -192,7 +205,7 @@
                                     group: 'foo',
                                     title: 'Error',
                                     type: 'error',
-                                    text: error.response.data.error
+                                    text: error.response.data.message
                                 });
                               //  console.error(error.response.data.error);
                             });
@@ -228,13 +241,13 @@
                         //    this.$router.push('/notes');
                         })
                         .catch(error => {
-                            console.error(error);
                             that.$notify({
                                 group: 'foo',
                                 title: 'Error',
                                 type: 'error',
-                                text: error.response.statusText
+                                text: error.response.data.message
                             });
+                            //  console.error(error.response.data.error);
                         });
                 this.showModal = false
             },

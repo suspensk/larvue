@@ -30,7 +30,9 @@ class TagController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            $errorString = implode("<br/>",$validator->messages()->all());
+          //  return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['message' => $errorString], 403);
         }
 
         $input = $request->all();

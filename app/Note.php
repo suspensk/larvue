@@ -21,7 +21,7 @@ class Note extends Model
         'email' => 'text',
     ];*/
 
-    protected $fillable = ['text'];
+    protected $fillable = ['text', 'privacy'];
 
 //    public function category()
 //    {

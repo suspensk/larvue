@@ -29,7 +29,7 @@ class CustomException extends Exception
      */
     public function render($request)
     {
-        return response()->json(['error' => $this->getMessage()], 403);
+        return response()->json(['message' => $this->getMessage()], 403);
         /*
          * for page error
          *

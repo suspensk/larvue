@@ -22,7 +22,7 @@ class UserController extends Controller
             return response()->json(['success' => $success]);
         }
 
-        return response()->json(['error' => 'Unauthorised'], 401);
+        return response()->json(['message' => 'Unauthorised'], 401);
     }
 
     public function logout()
@@ -40,7 +40,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()], 401);
         }
 
         $input = $request->all();
