@@ -70,14 +70,15 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="privacy" class="col-md-4 col-form-label text-md-right">Privacy settings:</label>
+
                             <div class="col-md-6">
-                            <label for="privacy">Privacy settings:</label>
                             <select name="privacy" class="form-control" id="privacy" v-model="privacy">
                                 <option value="0">public</option>
                                 <option value="1">protected</option>
                                 <option value="2">private</option>
                             </select>
-                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group row mb-0">

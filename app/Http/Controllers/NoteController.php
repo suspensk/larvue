@@ -10,9 +10,16 @@ use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $notes= Note::orderBy('created_at', 'desc')->with('tags')->with('images')->get();
+       // var_dump(auth()->guard('api')->user());
+        $user = $request->user('api');
+        if(empty($user)){
+            $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->get();
+        } else {
+            $notes= Note::orderBy('created_at', 'desc')->with('tags')->with('images')->get();
+        }
+
         foreach($notes as $key=>$note){
             $text = str_limit($note->text, 5, '');
             if($text != $note->text){

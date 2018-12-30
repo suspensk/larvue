@@ -73,7 +73,7 @@ export default {
             localStorage.removeItem('jwt');
             this.isLoggedIn = null;
             this.name=null;
-
+            this.$radio.$emit('logout');
 
         }
     },

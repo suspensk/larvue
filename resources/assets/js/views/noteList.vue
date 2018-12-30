@@ -8,8 +8,8 @@
 
                     <div class="small-card">
                         <span v-for="image in note.images">
-                            <img v-if="mobile == 1" @click="zoomImage('/uploads/' + image.name)" :src="'/uploads/200-' + image.name" >
-                            <img v-else @click="zoomImage('/uploads/' + image.name)" :src="'/uploads/540-' + image.name" >
+
+                            <img @click="zoomImage('/uploads/' + image.name)" :src="'/uploads/540-' + image.name" >
                         </span>
 
                         <span v-model="note.text">{{ note.text}}</span><a v-if="note.limited === true" @click="showText($event,note)" href="#" class="btn btn-info btn-sm">Read More</a>
@@ -61,6 +61,7 @@
         data(){
             return {
                 notes : [],
+                isLoggedIn : null,
             //    editingTask : null
             }
         },
@@ -91,36 +92,37 @@
 //                    })
 //                })
 //            },
+            init() {
+                this.notes = [];
+                let token = localStorage.getItem('jwt')
 
+                axios.defaults.headers.common['Content-Type'] = 'application/json'
+                axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+
+                axios.get('api/notes').then(response => {
+                    response.data.forEach((data) => {
+                        this.notes.push(
+                                data
+                                )
+                    })
+                })
+            }
+        },
+        created() {
+            this.$radio.$on('logout', () => {
+                this.init()
+            });
         },
         mounted() {
+            this.init();
 
-            let token = localStorage.getItem('jwt')
-
-            axios.defaults.headers.common['Content-Type'] = 'application/json'
-            axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-
-            axios.get('api/notes').then(response => {
-                response.data.forEach((data) => {
-                    this.notes.push(
-                            data
-                            /*{
-                        id : data.id,
-                        name : data.name,
-                        text: data.text,
-                        created: data.created_at
-                      //  tasks : []
-                    }*/)
-                })
-             //   this.loadTasks()
-            })
         },
-        beforeRouteEnter (to, from, next) {
-            if ( ! localStorage.getItem('jwt')) {
-                return next('login')
-            }
-
-            next()
-        }
+//        beforeRouteEnter (to, from, next) {
+//            if ( ! localStorage.getItem('jwt')) {
+//                return next('login')
+//            }
+//
+//            next()
+//        }
     }
 </script>
