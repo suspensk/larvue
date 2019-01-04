@@ -14,14 +14,15 @@ class NoteController extends Controller
     {
        // var_dump(auth()->guard('api')->user());
         $user = $request->user('api');
+      //  var_dump($user->id);
         if(empty($user)){
             $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->get();
         } else {
-            $notes= Note::orderBy('created_at', 'desc')->with('tags')->with('images')->get();
+            $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->orWhere('user_id',$user->id)->with('tags')->with('images')->with('user')->get();
         }
 
         foreach($notes as $key=>$note){
-            $text = str_limit($note->text, 100, '');
+            $text = str_limit($note->text, 1000, '');
             if($text != $note->text){
                 $notes[$key]['text'] = $text;
                 $notes[$key]['limited'] = true;
