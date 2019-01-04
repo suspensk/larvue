@@ -21,7 +21,7 @@ class NoteController extends Controller
         }
 
         foreach($notes as $key=>$note){
-            $text = str_limit($note->text, 5, '');
+            $text = str_limit($note->text, 100, '');
             if($text != $note->text){
                 $notes[$key]['text'] = $text;
                 $notes[$key]['limited'] = true;

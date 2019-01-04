@@ -1,30 +1,54 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
-            <h1>My notes</h1>
-            <ul class="note-list">
-                <li v-for="note,index in notes" class="transit-1" :id="note.id">
-                    <span v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id"><a href="#">#{{tag.name}}</a>&nbsp;&nbsp;</span>
+        <h2 class="text-center">Bootstrap 4 User Rating Form / Comment Form</h2>
+            <div class="card" v-for="note,index in notes" :id="note.id">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="https://image.ibb.co/jw55Ex/def_face.jpg" class="img img-rounded img-fluid"/>
+                            <p class="text-secondary text-center">15 Minutes Ago</p>
+                        </div>
+                        <div class="col-md-10">
+                            <p>
+                                <a class="float-left" href="https://maniruzzaman-akash.blogspot.com/p/contact.html"><strong>Maniruzzaman Akash</strong></a>
+                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
 
-                    <div class="small-card">
-                        <span v-for="image in note.images">
+                            </p>
+                            <div class="clearfix"></div>
+                            <p>
+                                <span v-model="note.text">{{ note.text}}</span>
+                                <a v-if="note.limited === true" @click="showText($event,note)" href="#" class="btn btn-info btn-sm">Read More</a>
+                            </p>
+                            <p>
+                                <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
+                                <a class="float-right btn text-white btn-danger"> <i class="fa fa-heart"></i> Like</a>
+                            </p>
+
+
+                            <span v-for="image in note.images">
 
                             <img @click="zoomImage('/uploads/' + image.name)" :src="'/uploads/540-' + image.name" >
                         </span>
 
-                        <span v-model="note.text">{{ note.text}}</span><a v-if="note.limited === true" @click="showText($event,note)" href="#" class="btn btn-info btn-sm">Read More</a>
 
+                            <span v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id"><a href="#">#{{tag.name}}</a>&nbsp;&nbsp;</span>
+
+                        </div>
                     </div>
-
-                </li>
-            </ul>
-
-
-        </div>
+                </div>
+            </div>
     </div>
+
 </template>
 
 <style scoped>
+
+  /*  .card-inner{
+        margin-left: 4rem;
+    }
     .card {
         border:0;
         border-radius: 0.5rem;
@@ -49,7 +73,7 @@
         width: 100%;
         height: 100%;
         resize: none;
-    }
+    }*/
 </style>
 
 <script>
