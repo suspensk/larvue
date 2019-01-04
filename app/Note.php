@@ -21,7 +21,7 @@ class Note extends Model
         'email' => 'text',
     ];*/
 
-    protected $fillable = ['text', 'privacy'];
+    protected $fillable = ['text', 'privacy', 'user_id'];
 
 //    public function category()
 //    {
@@ -46,5 +46,10 @@ class Note extends Model
     public function images()
     {
         return $this->hasMany(Image::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

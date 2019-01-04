@@ -6,35 +6,38 @@
                     <div class="row">
                         <div class="col-md-2">
                             <img src="https://image.ibb.co/jw55Ex/def_face.jpg" class="img img-rounded img-fluid"/>
-                            <p class="text-secondary text-center">15 Minutes Ago</p>
+                            <p class="text-secondary text-center">{{note.user.name}}</p>
+                           <!-- <p class="text-secondary text-center">15 Minutes Ago</p>-->
                         </div>
                         <div class="col-md-10">
-                            <p>
+                           <!-- <p>
                                 <a class="float-left" href="https://maniruzzaman-akash.blogspot.com/p/contact.html"><strong>Maniruzzaman Akash</strong></a>
                                 <span class="float-right"><i class="text-warning fa fa-star"></i></span>
                                 <span class="float-right"><i class="text-warning fa fa-star"></i></span>
                                 <span class="float-right"><i class="text-warning fa fa-star"></i></span>
                                 <span class="float-right"><i class="text-warning fa fa-star"></i></span>
 
+                            </p>-->
+                            <div class="clearfix"></div>
+                            <p>
+                                <span v-for="image in note.images">
+                                <img @click="zoomImage('/uploads/' + image.name)" :src="'/uploads/540-' + image.name" >
+                                </span>
                             </p>
                             <div class="clearfix"></div>
                             <p>
                                 <span v-model="note.text">{{ note.text}}</span>
-                                <a v-if="note.limited === true" @click="showText($event,note)" href="#" class="btn btn-info btn-sm">Read More</a>
+                                <a v-if="note.limited === true" @click="showText($event,note)" href="#" class="">Read More</a>
                             </p>
                             <p>
                                 <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
                                 <a class="float-right btn text-white btn-danger"> <i class="fa fa-heart"></i> Like</a>
                             </p>
+                            <div class="clearfix"></div>
+                            <p>
+                                <span v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id"><a href="#">#{{tag.name}}</a>&nbsp;&nbsp;</span>
+                            </p>
 
-
-                            <span v-for="image in note.images">
-
-                            <img @click="zoomImage('/uploads/' + image.name)" :src="'/uploads/540-' + image.name" >
-                        </span>
-
-
-                            <span v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id"><a href="#">#{{tag.name}}</a>&nbsp;&nbsp;</span>
 
                         </div>
                     </div>
