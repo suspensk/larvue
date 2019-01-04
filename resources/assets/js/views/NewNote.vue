@@ -23,7 +23,7 @@
                 </picture-input>
                <!-- <button-counter></button-counter>
                 <button-counter></button-counter>-->
-                <button id="show-modal" @click="showModal = true">add tag</button>
+
                 <modal v-if="showModal" @close="showModal = false">
                     <!--
                       you can use custom content here to overwrite
@@ -60,6 +60,7 @@
                                     :customHeaders="myHeaders"
                             >
                             </autocomplete>
+                            <button id="show-modal" class="btn btn-primary"  @click="showModal = true">add tag</button>
                         </div>
                         </div>
                         <div class="form-group row">
@@ -199,7 +200,13 @@
 
                     axios.post('api/notes', fd, {headers: { 'content-type': 'multipart/form-data' }})
                             .then(response => {
-                                //  this.$router.push('/notes');
+                                that.$notify({
+                                    group: 'foo',
+                                    title: 'Success',
+                                    type: 'success',
+                                    text: 'added successfully'
+                                });
+                                  this.$router.push('/notes');
                             })
                             .catch(error => {
                                 that.$notify({
