@@ -31,7 +31,9 @@
                             </p>
                             <p>
                                 <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
-                                <a class="float-right btn text-white btn-danger"> <i class="fa fa-heart"></i> Like</a>
+                                <a class="float-right btn text-white btn-danger ml-2"> <i class="fa fa-heart"></i> Like</a>
+                                <a @click="deleteNote($event,note)" href="#" class="float-right btn text-white btn-danger"> <i class="fa fa-trash"></i> Delete</a>
+
                             </p>
                             <div class="clearfix"></div>
                             <p>
@@ -112,13 +114,21 @@
                     console.log(response.data);
                 })
             },
-//            loadTasks() {
-//                this.categories.map(category => {
-//                    axios.get(`api/category/${category.id}/tasks`).then(response => {
-//                        category.tasks = response.data
-//                    })
-//                })
-//            },
+                let id = note.id;
+                e.preventDefault();
+                let note_id = id;
+
+//                let name = "New task"
+//                let category_id = this.categories[id].id
+//                let order = this.categories[id].tasks.length
+
+                axios.get('api/notes/' + note_id, {}).then(response => {
+                    // this.categories[id].tasks.push(response.data.data)
+                    note.text=response.data.text;
+                    note.limited=false;
+                    console.log(response.data);
+                })
+            },
             init() {
                 this.notes = [];
                 let token = localStorage.getItem('jwt')
