@@ -16,9 +16,11 @@ class NoteController extends Controller
         $user = $request->user('api');
       //  var_dump($user->id);
         if(empty($user)){
-            $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->get();
+            $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->with('user')->get();
         } else {
-            $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->orWhere('user_id',$user->id)->with('tags')->with('images')->with('user')->get();
+            $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->orWhere('user_id','=',$user->id)->with('tags')->with('images')->with('user')->get();
+           // $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->get();
+          //  $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->get();
         }
 
         foreach($notes as $key=>$note){
