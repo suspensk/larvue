@@ -32,13 +32,14 @@ class NoteController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user('api');
         $input = $request->all();
         $file_flag = 0;
         if(!empty($request->file('image'))){
             $file = $request->file('image');
             $target_dir = __DIR__ . "/../../../public/uploads/";
             $ext = $file->getClientOriginalExtension();
-            $user= $request->user();
+
             $target_file_name = base64_encode('user' .  $user['id'] . 'time' . time()) . '.' . $ext ;
             $this->uploadFiles($file, $target_dir, $target_file_name);
             $file_flag = 1;
@@ -53,7 +54,7 @@ class NoteController extends Controller
             $errorString = implode("<br/>",$validator->messages()->all());
             return response()->json(['message' => $errorString], 403);
         }
-
+        $input['user_id'] = $user['id'];
         $note = Note::create($input);
         $note->tags()->attach($request->tags);
         $note->save();
