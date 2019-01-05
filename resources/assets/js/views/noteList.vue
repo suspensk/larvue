@@ -45,6 +45,7 @@
                     </div>
                 </div>
             </div>
+        <notifications group="foo" />
     </div>
 
 </template>
@@ -114,20 +115,31 @@
                     console.log(response.data);
                 })
             },
+            deleteNote(e, note) {
+                this.showModal = true;
                 let id = note.id;
                 e.preventDefault();
                 let note_id = id;
+                let that = this;
 
-//                let name = "New task"
-//                let category_id = this.categories[id].id
-//                let order = this.categories[id].tasks.length
-
-                axios.get('api/notes/' + note_id, {}).then(response => {
-                    // this.categories[id].tasks.push(response.data.data)
-                    note.text=response.data.text;
-                    note.limited=false;
+                axios.delete('api/notes/' + note_id, {}).then(response => {
+                    that.$notify({
+                        group: 'foo',
+                        title: 'Success',
+                        type: 'success',
+                        text: 'deleted successfully'
+                    });
                     console.log(response.data);
-                })
+                    this.init();
+                }).catch(error => {
+                    that.$notify({
+                        group: 'foo',
+                        title: 'Error',
+                        type: 'error',
+                        text: error.response.data.message
+                    });
+                    //  console.error(error.response.data.error);
+                });
             },
             init() {
                 this.notes = [];

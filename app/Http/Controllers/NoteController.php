@@ -19,10 +19,7 @@ class NoteController extends Controller
             $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->with('user')->get();
         } else {
             $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->orWhere('user_id','=',$user->id)->with('tags')->with('images')->with('user')->get();
-           // $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->get();
-          //  $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->get();
         }
-
         foreach($notes as $key=>$note){
             $text = str_limit($note->text, 1000, '');
             if($text != $note->text){
@@ -61,7 +58,7 @@ class NoteController extends Controller
         $note->tags()->attach($request->tags);
         $note->save();
 
-        var_dump($note->id);
+     //   var_dump($note->id);
         if($file_flag){
             Image::create([
                 'original_name' => $file->getClientOriginalName(),
@@ -79,6 +76,23 @@ class NoteController extends Controller
     {
         return response()->json($note);
     }
+
+    public function destroy(Note $note)
+    {
+        $note->images()->delete();
+        $note->delete();
+        return response()->json(['success'=>0]);
+    }
+
+//    public function destroy($id) {
+//        $article = Article::findOrFail($id);
+//        $article->delete();
+//
+//        return view('dashboard')->with([
+//            'flash_message' => 'Deleted',
+//            'flash_message_important' => false
+//        ]);
+//    }
 
     public function uploadFiles($file, $target_dir, $target_file_name){
       //  $file = $request->file('image');
