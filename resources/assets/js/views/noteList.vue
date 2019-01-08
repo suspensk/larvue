@@ -1,6 +1,20 @@
 <template>
     <div class="container">
-        <h2 class="text-center">Bootstrap 4 User Rating Form / Comment Form</h2>
+        <modal v-if="showModal" @close="showModal = false">
+            <span slot="body">
+                are you sure you want to delete?
+            </span>
+            <span slot="footer">
+                         <button class="modal-default-button" @click="deleteNote()">
+                          YES
+                         </button>
+                <button class="modal-default-button" @click="showModal = false">
+                          NO
+                         </button>
+                    </span>
+            <h3 slot="header">Confirmation</h3>
+        </modal>
+        <h2 class="text-center">Notes</h2>
             <div class="card" v-for="note,index in notes" :id="note.id">
                 <div class="card-body">
                     <div class="row">
@@ -32,7 +46,7 @@
                             <p>
                                 <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
                                 <a class="float-right btn text-white btn-danger ml-2"> <i class="fa fa-heart"></i> Like</a>
-                                <a @click="deleteNote($event,note)" href="#" class="float-right btn text-white btn-danger"> <i class="fa fa-trash"></i> Delete</a>
+                                <a @click="$event.preventDefault(); showModal = true; curNote=note" href="#" class="float-right btn text-white btn-danger"> <i class="fa fa-trash"></i> Delete</a>
 
                             </p>
                             <div class="clearfix"></div>
@@ -83,6 +97,7 @@
 </style>
 
 <script>
+    import Modal from './ModalWindow';
   //  import draggable from 'vuedraggable'
     export default {
 //        components: {
@@ -92,6 +107,8 @@
             return {
                 notes : [],
                 isLoggedIn : null,
+                showModal: false,
+                curNote: null
             //    editingTask : null
             }
         },
@@ -104,10 +121,6 @@
                   e.preventDefault();
                   let note_id = id;
 
-//                let name = "New task"
-//                let category_id = this.categories[id].id
-//                let order = this.categories[id].tasks.length
-
                 axios.get('api/notes/' + note_id, {}).then(response => {
                    // this.categories[id].tasks.push(response.data.data)
                     note.text=response.data.text;
@@ -115,11 +128,9 @@
                     console.log(response.data);
                 })
             },
-            deleteNote(e, note) {
-                this.showModal = true;
-                let id = note.id;
-                e.preventDefault();
-                let note_id = id;
+            deleteNote() {
+                this.showModal = false;
+                let note_id = this.curNote.id;
                 let that = this;
 
                 axios.delete('api/notes/' + note_id, {}).then(response => {
@@ -166,6 +177,9 @@
             this.init();
 
         },
+        components: {
+            Modal
+        }
 //        beforeRouteEnter (to, from, next) {
 //            if ( ! localStorage.getItem('jwt')) {
 //                return next('login')
