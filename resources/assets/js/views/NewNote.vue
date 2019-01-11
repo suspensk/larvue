@@ -189,6 +189,7 @@
                 let that = this;
                 //this.$router.go('/board');
                 let tags = this.tags.map(a => a.id);
+              //  console.log(tags);
                 var fd = new FormData();
                 if(this.image!= "") {
                     let picture = this.$refs.pictureInput.file;
@@ -196,7 +197,7 @@
                 }
                     fd.append('text', this.text);
                     fd.append('privacy', this.privacy);
-                    fd.append('tags', tags);
+                    fd.append('tags', JSON.stringify(tags));
 
                     axios.post('api/notes', fd, {headers: { 'content-type': 'multipart/form-data' }})
                             .then(response => {
