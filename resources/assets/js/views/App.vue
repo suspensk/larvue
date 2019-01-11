@@ -28,8 +28,8 @@
                                 </ul>
                             </li>
                         </ul>
-                        <router-link :to="{ name: 'board' }" class="nav-link" v-if="isLoggedIn">Board</router-link>
-                        <router-link :to="{ name: 'newnote' }" class="nav-link">New note</router-link>
+                      <!--  <router-link :to="{ name: 'board' }" class="nav-link" v-if="isLoggedIn">Board</router-link>-->
+                        <router-link :to="{ name: 'newnote' }" class="nav-link" v-if="isLoggedIn">New note</router-link>
                         <router-link :to="{ name: 'notelist' }" class="nav-link">notes</router-link>
                     </ul>
                 </div>
