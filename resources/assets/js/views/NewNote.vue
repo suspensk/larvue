@@ -207,7 +207,8 @@
                                     type: 'success',
                                     text: 'added successfully'
                                 });
-                                  this.$router.push('/notes');
+                              //    this.$router.push('/notes');
+                                this.$emit('reload-list');
                             })
                             .catch(error => {
                                 that.$notify({

@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <newNote @reload-list="init()"></newNote>
         <modal v-if="showModal" @close="showModal = false">
             <span slot="body">
                 are you sure you want to delete?
@@ -21,6 +22,9 @@
                         <div class="col-md-2">
                             <img src="https://image.ibb.co/jw55Ex/def_face.jpg" class="img img-rounded img-fluid"/>
                             <p class="text-secondary text-center">{{note.user.name}}</p>
+                            <p class="text-secondary text-center" v-if="note.privacy == 0">public</p>
+                            <p class="text-secondary text-center" v-else-if="note.privacy == 2">private</p>
+                            <p class="text-secondary text-center">{{note.created_at}}</p>
                            <!-- <p class="text-secondary text-center">15 Minutes Ago</p>-->
                         </div>
                         <div class="col-md-10">
@@ -98,6 +102,7 @@
 
 <script>
     import Modal from './ModalWindow';
+    import NewNote from './NewNote';
   //  import draggable from 'vuedraggable'
     export default {
 //        components: {
@@ -178,7 +183,7 @@
 
         },
         components: {
-            Modal
+            Modal, NewNote
         }
 //        beforeRouteEnter (to, from, next) {
 //            if ( ! localStorage.getItem('jwt')) {
