@@ -12,7 +12,7 @@ use Sofa\Eloquence\Mappable; // extension trait*/
 
 class Note extends Model
 {
-    use SoftDeletes;
+   // use SoftDeletes;
     /* use Eloquence, Mappable; FOR FIELD ALIAS email - in model, text in DB
 
     protected $fillable = ['name', 'email'];
