@@ -113,7 +113,8 @@
                 notes : [],
                 isLoggedIn : null,
                 showModal: false,
-                curNote: null
+                curNote: null,
+                tags:[]
             //    editingTask : null
             }
         },
@@ -164,7 +165,13 @@
                 axios.defaults.headers.common['Content-Type'] = 'application/json'
                 axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
-                axios.get('api/notes').then(response => {
+                let q = {};
+                let tags = this.tags.map(a => a.id);
+                q.tags = tags;
+                axios.get('api/notes',{
+                        params: {
+                            q
+                        }}).then(response => {
                     response.data.forEach((data) => {
                         this.notes.push(
                                 data
@@ -176,6 +183,10 @@
         created() {
             this.$radio.$on('logout', () => {
                 this.init()
+            });
+            this.$radio.$on('tag-search', (tags) => {
+                this.tags = tags;
+                this.init();
             });
         },
         mounted() {

@@ -12,14 +12,37 @@ class NoteController extends Controller
 {
     public function index(Request $request)
     {
-       // var_dump(auth()->guard('api')->user());
+        /*      \DB::connection()->enableQueryLog();
+       $queries = \DB::connection()->getQueryLog();
+       $last_query = end($queries);
+       var_dump($queries) ;
+*/
         $user = $request->user('api');
-      //  var_dump($user->id);
-        if(empty($user)){
-            $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->with('user')->get();
-        } else {
-            $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->orWhere('user_id','=',$user->id)->with('tags')->with('images')->with('user')->get();
+        if (isset($request->q)){
+            $q = json_decode($request->q);
+            if (!empty($q->tags)){
+                $callback = function($query) use ($q) {
+                    $query->whereIn('tag_id', $q->tags);
+                };
+            }
+
+
         }
+
+        if(isset($callback)){
+            $notes= Note::orderBy('created_at', 'desc')->
+            whereHas('tags', $callback)->
+            with(['tags' => $callback])->
+            with('images')->with('user')->get();
+        }else{
+            // var_dump(auth()->guard('api')->user());
+              if(empty($user)){
+                  $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->with('tags')->with('images')->with('user')->get();
+              } else {
+                  $notes= Note::orderBy('created_at', 'desc')->where('privacy','=',0)->orWhere('user_id','=',$user->id)->with('tags')->with('images')->with('user')->get();
+              }
+        }
+
         foreach($notes as $key=>$note){
             $text = str_limit($note->text, 1000, '');
             if($text != $note->text){

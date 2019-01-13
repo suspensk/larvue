@@ -8,6 +8,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <Search></Search>
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto"></ul>
 
@@ -43,6 +44,7 @@
 
 
 <script>
+    import Search from './Search';
 export default {
     data(){
         return {
@@ -77,5 +79,8 @@ export default {
 
         }
     },
+    components: {
+        Search
+    }
 }
 </script>
