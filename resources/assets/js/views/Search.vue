@@ -1,11 +1,11 @@
 <template>
         <form class="form-inline my-2 my-lg-0">
              <span v-for="tag in tags">
-                                <a href="#" @click="removeTag(tag.id, $event)"> x </a><span>{{ tag.name }}</span>&nbsp;&nbsp;
-                            </span>
+                <a href="#" @click="removeTag(tag.id, $event)"> x </a><span>{{ tag.name }}</span>&nbsp;&nbsp;
+             </span>
             <autocomplete
                     ref="autocomplete"
-                    className="tags"
+                    className="tags form-control"
                     url="/api/tags"
                     anchor="name"
                     label=""
@@ -15,7 +15,7 @@
                     :customHeaders="myHeaders"
             >
             </autocomplete>
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <!--  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>

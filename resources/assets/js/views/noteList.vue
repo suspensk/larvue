@@ -1,6 +1,8 @@
 <template>
     <div class="container">
+        <span v-if="isLoggedIn">
         <newNote @reload-list="init()"></newNote>
+        </span>
         <modal v-if="showModal" @close="showModal = false">
             <span slot="body">
                 are you sure you want to delete?
@@ -49,7 +51,7 @@
                             </p>
                             <p>
                                 <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
-                                <a class="float-right btn text-white btn-danger ml-2"> <i class="fa fa-heart"></i> Like</a>
+                              <!--  <a class="float-right btn text-white btn-danger ml-2"> <i class="fa fa-heart"></i> Like</a>-->
                                 <a @click="$event.preventDefault(); showModal = true; curNote=note" href="#" class="float-right btn text-white btn-danger"> <i class="fa fa-trash"></i> Delete</a>
 
                             </p>
@@ -182,6 +184,7 @@
         },
         created() {
             this.$radio.$on('logout', () => {
+                this.isLoggedIn = null;
                 this.init()
             });
             this.$radio.$on('tag-search', (tags) => {
@@ -190,6 +193,7 @@
             });
         },
         mounted() {
+            this.isLoggedIn = localStorage.getItem('jwt');
             this.init();
 
         },
