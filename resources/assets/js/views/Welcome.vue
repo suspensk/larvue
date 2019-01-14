@@ -3,10 +3,10 @@
         <div class="content">
             <div  class="m-b-md">
                 <h2 class="title m-b-md">
-                    Treclon
+                    Karbas
                 </h2>
                 <h3>
-                    Your efficent task planner
+                    Your pisis...
                 </h3>
             </div>
         </div>
