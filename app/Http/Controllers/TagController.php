@@ -12,11 +12,18 @@ class TagController extends Controller
 {
     public function index(Request $request)
     {
+        $query = Tag::orderBy('created_at', 'desc');
         if (isset($request->q)){
-            $tags= Tag::where('name', 'like', '%' . $request->q .'%')->orderBy('created_at', 'desc')->get();
-        } else {
-            $tags= Tag::orderBy('created_at', 'desc')->get();
+            if(!is_array($request->q)){
+                $query->where('name', 'like', '%' . $request->q .'%');
+            } else {
+                foreach($request->q as $tag){
+                    $query->orWhere('name', '=', $tag);
+                }
+            }
         }
+
+        $tags= $query->get();
 
         return response()->json($tags->toArray());
     }

@@ -57,7 +57,9 @@
                             </p>
                             <div class="clearfix"></div>
                             <p>
-                                <span v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id"><a href="#">#{{tag.name}}</a>&nbsp;&nbsp;</span>
+                                <span v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id">
+                                    <a  v-bind:href="'/notes/?tags='+ tag.name">#{{tag.name}}</a>&nbsp;&nbsp;
+                                </span>
                             </p>
 
 
@@ -72,34 +74,7 @@
 
 <style scoped>
 
-  /*  .card-inner{
-        margin-left: 4rem;
-    }
-    .card {
-        border:0;
-        border-radius: 0.5rem;
-    }
-    .transit-1 {
-        transition: all 1s;
-    }
-    .small-card {
-        padding: 1rem;
-        background: #f5f8fa;
-        margin-bottom: 5px;
-        border-radius: .25rem;
-    }
-    .card-body-dark{
-        background-color: #ccc;
-    }
-    textarea {
-        overflow: visible;
-        outline: 1px dashed black;
-        border: 0;
-        padding: 6px 0 2px 8px;
-        width: 100%;
-        height: 100%;
-        resize: none;
-    }*/
+
 </style>
 
 <script>
@@ -107,9 +82,6 @@
     import NewNote from './NewNote';
   //  import draggable from 'vuedraggable'
     export default {
-//        components: {
-//            draggable
-//        },
         data(){
             return {
                 notes : [],
@@ -163,23 +135,49 @@
             init() {
                 this.notes = [];
                 let token = localStorage.getItem('jwt')
-
                 axios.defaults.headers.common['Content-Type'] = 'application/json'
-                axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+                axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 
-                let q = {};
-                let tags = this.tags.map(a => a.id);
-                q.tags = tags;
-                axios.get('api/notes',{
+                var TagsPromise = this.tags;
+
+                if(this.tags.length ==0 && this.$route.query.tags !== undefined ){
+                   let tags_names = this.$route.query.tags.split(",");
+                    TagsPromise = new Promise((resolve, reject) => {
+                        axios.get('api/tags',{
+                            params: {
+                                q: tags_names
+                            }})
+                                .then(response => {
+                                    resolve(response.data)
+                                })
+                                .catch(error => {
+                                    reject('fail')
+                                })
+                    });
+                }
+
+
+                Promise.all([
+                    TagsPromise
+                ]).then(results => {
+                    this.tags = results[0];
+                    let q = {};
+                    if(Object.keys(this.tags).length != 0){
+                        let tags = this.tags.map(a => a.id);
+                        q.tags = tags;
+                    }
+
+                    axios.get('api/notes',{
                         params: {
                             q
                         }}).then(response => {
-                    response.data.forEach((data) => {
-                        this.notes.push(
-                                data
-                                )
+                        response.data.forEach((data) => {
+                            this.notes.push(
+                                    data
+                            )
+                        })
                     })
-                })
+                });
             }
         },
         created() {
