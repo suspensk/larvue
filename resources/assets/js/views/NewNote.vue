@@ -177,9 +177,6 @@
                 if (image) {
                     this.image = image;
                 //    console.log('Picture loaded.')
-
-
-
                 } else {
                     console.log('FileReader API not supported: use the <form>, Luke!')
                 }
@@ -207,8 +204,10 @@
                                     type: 'success',
                                     text: 'added successfully'
                                 });
+                                //
                               //    this.$router.push('/notes');
                                 this.$emit('reload-list');
+                                this.clearForm();
                             })
                             .catch(error => {
                                 that.$notify({
@@ -220,18 +219,6 @@
                               //  console.error(error.response.data.error);
                             });
 
-
-//                    axios.post('api/notes', {
-//                      //  name: this.name,
-//                        text: this.text,
-//                        tags: tags
-//                    })
-//                        .then(response => {
-//                        //    this.$router.push('/notes');
-//                        })
-//                        .catch(error => {
-//                            console.error(error);
-//                        });
 
             },
             hideModal() {
@@ -281,6 +268,15 @@
              //   let response = JSON.parse(obj);
                 // The options to pass in the autocomplete props
                 this.options = obj;
+            },
+            clearForm() {
+                        this.text = "";
+                        this.privacy = 0;
+                        this.showModal = false;
+                        this.newTag = "";
+                        this.tags = [];
+                        this.$refs.pictureInput.$emit('remove');
+                     //   this.image = "";
             }
         },
         components: {
