@@ -58,7 +58,7 @@
                             <div class="clearfix"></div>
                             <p>
                                 <span v-for="tag,tagIndex in note.tags" class="transit-1" :id="tag.id">
-                                    <a  v-bind:href="'/notes/?tags='+ tag.name">#{{tag.name}}</a>&nbsp;&nbsp;
+                                    <a  v-bind:href="'/notes?tags='+ tag.name">#{{tag.name}}</a>&nbsp;&nbsp;
                                 </span>
                             </p>
 
