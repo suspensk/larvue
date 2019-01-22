@@ -183,6 +183,7 @@
             }
         },
         created() {
+            alert(8)
             this.$radio.$on('logout', () => {
                 this.isLoggedIn = null;
                 this.init()
