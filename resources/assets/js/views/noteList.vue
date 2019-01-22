@@ -148,6 +148,8 @@
                                 q: tags_names
                             }})
                                 .then(response => {
+                                    this.tags = response.data;
+                                    this.$radio.$emit('tag-query',this.tags);
                                     resolve(response.data)
                                 })
                                 .catch(error => {
@@ -160,7 +162,7 @@
                 Promise.all([
                     TagsPromise
                 ]).then(results => {
-                    this.tags = results[0];
+                  //  this.tags = results;
                     let q = {};
                     if(Object.keys(this.tags).length != 0){
                         let tags = this.tags.map(a => a.id);

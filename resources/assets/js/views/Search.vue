@@ -44,19 +44,36 @@ export default {
         this.isLoggedIn = localStorage.getItem('jwt')
         this.name = localStorage.getItem('user')
     },
+    created(){
+        this.$radio.$on('tag-query', (tags) => {
+            this.tags = tags;
+           // this.init();
+        });
+    },
     methods : {
         setTag (obj) {
             this.tags.push(obj);
-            //console.log(obj);
-            this.$radio.$emit('tag-search',this.tags);
             this.$refs.autocomplete.setValue('');
+            this.$router.push(this.createQuery());
+            this.$radio.$emit('tag-search',this.tags);
         },
         removeTag(id, e){
             e.preventDefault();
             this.tags = this.tags.filter(function( obj ) {
                 return obj.id !== id;
             });
+
+            this.$router.push(this.createQuery());
             this.$radio.$emit('tag-search',this.tags);
+        },
+        createQuery(){
+            if(this.tags.length == 0){
+                return '/notes';
+            }
+            let tags_names = this.tags.map(a => a.name);
+            let tags_string = tags_names.join();
+            let query = '/notes?tags=' + tags_string;
+            return query;
         },
         ajaxLoaded(obj){
          //   console.log('mydata:',obj);
