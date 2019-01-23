@@ -2,7 +2,7 @@ import axios from "axios";
 // TODO: use defined types
 
 const state = {
-  token: localStorage.getItem("user-token") || "",
+  token: localStorage.getItem("jwt") || "",
   status: ""
 };
 
@@ -30,7 +30,7 @@ const actions = {
       })
         .then(resp => {
           const token = resp.data.success.token;
-          localStorage.setItem("user-token", token); // store the token in localstorage
+          localStorage.setItem("jwt", token); // store the token in localstorage
           commit("AUTH_SUCCESS", token);
           // you have your token, now log in your user :)
           //dispatch("USER_REQUEST");
@@ -38,7 +38,7 @@ const actions = {
         })
         .catch(err => {
           commit("AUTH_ERROR", err);
-          localStorage.removeItem("user-token"); // if the request fails, remove any possible user token if possible
+          localStorage.removeItem("jwt"); // if the request fails, remove any possible user token if possible
           reject(err);
         });
     });
@@ -46,7 +46,7 @@ const actions = {
   ["AUTH_LOGOUT"]: ({ commit }) => {
     return new Promise(resolve => {
       commit("AUTH_LOGOUT");
-      localStorage.removeItem("user-token"); // clear your user's token from localstorage
+      localStorage.removeItem("jwt"); // clear your user's token from localstorage
       resolve();
     });
   }

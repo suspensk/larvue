@@ -9,7 +9,7 @@ const $http = axios.create({
 
 $http.interceptors.request.use(
   config => {
-    config.headers.authorization = "Bearer " + (() => "fake JWT")();
+    config.headers.authorization = "Bearer " + (() => localStorage.getItem('jwt'))();
     return config;
   },
   error => Promise.reject(error)
