@@ -24,12 +24,12 @@ const actions = {
       };
       // TODO: take from config
       axios({
-        url: "/login",
+        url: "/api/login",
         data,
         method: "POST"
       })
         .then(resp => {
-          const token = resp.data.token;
+          const token = resp.data.success.token;
           localStorage.setItem("user-token", token); // store the token in localstorage
           commit("AUTH_SUCCESS", token);
           // you have your token, now log in your user :)
