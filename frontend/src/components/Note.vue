@@ -2,7 +2,6 @@
   <v-card
     class="my-3"
     hover
-    v-if="show"
     :to="{ name: 'single.note', params: { id: note.id } }"
   >
     <v-toolbar color="white" dense flat>
@@ -61,9 +60,9 @@ export default {
     return {};
   },
   computed: {
-    show() {
+    /*show() {
       return this.note.privacy === 0;
-    }
+    }*/
   },
   methods: {
     more() {}
