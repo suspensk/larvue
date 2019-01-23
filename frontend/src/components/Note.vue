@@ -14,8 +14,13 @@
         </v-list-tile-avatar>
 
         <v-list-tile-content class="pl-0">
-          <v-list-tile-title>Evan You</v-list-tile-title>
-          <v-list-tile-sub-title>12, Jan</v-list-tile-sub-title>
+          <v-list-tile-title>{{ note.user.name }}</v-list-tile-title>
+         <!-- <v-list-tile-sub-title v-if="note.privacy == 0">public</v-list-tile-sub-title>
+          <v-list-tile-sub-title v-else-if="note.privacy == 2">private</v-list-tile-sub-title>-->
+          <v-list-tile-sub-title>{{note.created_at}},
+             <span v-if="note.privacy == 0">public</span>
+            <span v-else-if="note.privacy == 2">private</span>
+          </v-list-tile-sub-title>
         </v-list-tile-content>
       </v-list-tile>
 
@@ -23,6 +28,11 @@
 
       <v-btn icon> <v-icon>more_vert</v-icon> </v-btn>
     </v-toolbar>
+
+    <template  v-if="note.images">
+      <v-img v-for="image in note.images" :key="image.id" class="white--text" :src="'/uploads/540-' + image.name"> </v-img>
+    </template>
+
     <v-img class="white--text" :src="note.image" v-if="note.image">
       <v-container fill-height fluid>
         <v-layout>
