@@ -4,7 +4,7 @@
       <v-flex xl4 lg5 md8 xs12 offset-md3>
         <new-note v-if="$store.getters.isAuthenticated"></new-note>
         <div v-for="post in notes" :key="post.title">
-          <note :note="post"></note>
+          <note :post="post"></note>
         </div>
       </v-flex>
     </v-layout>

@@ -47,17 +47,20 @@
     <v-card-text v-html="note.text"></v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn @click.prevent="more" flat class="blue--text">Read More</v-btn>
+      <v-btn  v-if="note.limited" @click.prevent="more()" flat class="blue--text">Read More</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import NotesService from "@/services/notes";
 export default {
   name: "Note",
-  props: ["note"],
+  props: ["post"],
   data() {
-    return {};
+    return {
+      note: this.post
+    };
   },
   computed: {
     /*show() {
@@ -65,7 +68,12 @@ export default {
     }*/
   },
   methods: {
-    more() {}
+    async more() {
+     // e.preventDefault();
+      let text = await NotesService.more(this.note.id);
+      this.note.text = text;
+      this.note.limited=false;
+    }
   }
 };
 </script>

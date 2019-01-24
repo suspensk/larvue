@@ -11,6 +11,11 @@ export default {
     return resp.data;
   },
 
+  more: async id => {
+    const resp = await $http.get(`/notes/${id}`);
+    return resp.data.text;
+  },
+
   add: async data => {
     var fd = new FormData();
     // if(this.image!= "") {
