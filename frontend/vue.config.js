@@ -5,16 +5,11 @@ module.exports = {
   // proxy API requests to Valet during development
   devServer: {
     historyApiFallback: true,
-    noInfo: true,
     proxy: {
       '/api': {
         target: 'http://larvue',
         changeOrigin: true,
-        secure: false,
-        cookieDomainRewrite: '',
-        onProxyReq: function (request, req, res) {
-          request.setHeader('origin', 'http://larvue')
-        }
+        secure: false
       },
     }
   },

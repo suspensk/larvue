@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
-        <new-note></new-note>
+        <new-note v-if="$store.getters.isAuthenticated"></new-note>
         <div v-for="post in notes" :key="post.title">
           <note :note="post"></note>
         </div>

@@ -44,7 +44,7 @@
     <v-card-title v-else primary-title>
       <span class="headline">{{ note.title }}</span>
     </v-card-title>
-    <v-card-text> {{ note.text }} </v-card-text>
+    <v-card-text v-html="note.text"></v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn @click.prevent="more" flat class="blue--text">Read More</v-btn>

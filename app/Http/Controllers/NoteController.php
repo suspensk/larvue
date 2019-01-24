@@ -87,10 +87,12 @@ class NoteController extends Controller
         $input['user_id'] = $user['id'];
         $note = Note::create($input);
         $tags = json_decode($request->tags);
-
-        foreach($tags as $tag){
-            $note->tags()->attach($tag);
+        if(!empty($tags)){
+            foreach($tags as $tag){
+                $note->tags()->attach($tag);
+            }
         }
+
 
         $note->save();
 

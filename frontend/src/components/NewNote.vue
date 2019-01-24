@@ -26,6 +26,7 @@ import { VueEditor } from "vue2-editor";
 import { ImageDrop } from "quill-image-drop-module";
 import ImageResize from "quill-image-resize-module";
 import "quill-mention";
+import NotesService from "@/services/notes";
 
 const atValues = [
   {
@@ -170,9 +171,17 @@ export default {
   created() {},
 
   methods: {
-    handleSavingContent: function() {
-      // You have the content to save
-      console.log(this.content);
+    async handleSavingContent() {
+      try {
+    //     NotesService.add(this.content).then(resp => {}).catch(err => {}); the same
+        const res = await NotesService.add(this.content);
+        console.log(res);
+     //   this.notes = res;
+        // You have the content to save
+        console.log(this.content);
+      } catch (e) {
+
+      }
     }
   }
 };
