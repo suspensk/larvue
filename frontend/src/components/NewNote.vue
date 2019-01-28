@@ -18,6 +18,18 @@
         <v-icon>send</v-icon>
       </v-btn>
     </v-card-actions>
+    <div>
+      <div class="file-upload-form">
+        Upload an image file:
+        <input id="fileinput" type="file" @change="previewImage" accept="image/*">
+      </div>
+      <div v-if="imageData.length > 0">
+        <button @click="removeImage">Remove image</button>
+      </div>
+      <div class="image-preview" v-if="imageData.length > 0">
+        <img class="preview" :src="imageData">
+      </div>
+    </div>
   </v-card>
 </template>
 
@@ -128,6 +140,7 @@ export default {
   },
   data() {
     return {
+      imageData: "",
       content: "",
       customToolbar: [
         ["bold", "italic", "underline"],
@@ -173,21 +186,59 @@ export default {
   methods: {
     async handleSavingContent() {
       try {
+        var fd = new FormData();
+        if ( document.querySelector("#fileinput").files[0] != undefined) {
+          fd.append('image', document.querySelector("#fileinput").files[0]);
+        }
+        fd.append('text', this.content);
+        fd.append('privacy', 0);
+        fd.append('tags', {});
+
     //     NotesService.add(this.content).then(resp => {}).catch(err => {}); the same
-        const res = await NotesService.add(this.content);
-        console.log(res);
-     //   this.notes = res;
-        // You have the content to save
-        console.log(this.content);
+        const res = await NotesService.add(fd);
         this.$emit('reload-list');
         this.content = "";
+        this.removeImage();
       } catch (e) {
 
       }
+    },
+    previewImage: function(event) {
+      // Reference to the DOM input element
+      var input = event.target;
+      // Ensure that you have a file before attempting to read it
+      if (input.files && input.files[0]) {
+        // create a new FileReader to read this image and convert to base64 format
+        var reader = new FileReader();
+        // Define a callback function to run, when FileReader finishes its job
+        reader.onload = (e) => {
+          // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+          // Read image as base64 and set to imageData
+          this.imageData = e.target.result;
+        }
+        // Start the reader job - read file as a data url (base64 format)
+        reader.readAsDataURL(input.files[0]);
+      }
+    },
+    removeImage: function(event){
+      this.imageData = "";
+      document.querySelector("#fileinput").value="";
     }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="stylus"></style>
+<style scoped lang="stylus">
+  .file-upload-form, .image-preview {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    padding: 20px;
+  }
+  img.preview {
+    width: 200px;
+    background-color: white;
+    border: 1px solid #DDD;
+    padding: 5px;
+  }
+
+</style>
