@@ -2,8 +2,8 @@
   <v-container fluid>
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
-        <new-note v-if="$store.getters.isAuthenticated"></new-note>
-        <div v-for="post in notes" :key="post.title">
+        <new-note @reload-list="init()" v-if="$store.getters.isAuthenticated"></new-note>
+        <div v-for="post in notes" :key="post.id">
           <note :post="post"></note>
         </div>
       </v-flex>
@@ -33,12 +33,15 @@ export default {
       this.drawer = !this.drawer;
     });
 
-    const res = await NotesService.all();
-    console.log();
-    this.notes = res;
+    this.init();
   },
 
-  methods: {}
+  methods: {
+    async init() {
+      const res = await NotesService.all();
+      this.notes = res;
+    },
+  }
 };
 </script>
 
