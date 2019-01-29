@@ -39,6 +39,7 @@ import { ImageDrop } from "quill-image-drop-module";
 import ImageResize from "quill-image-resize-module";
 import "quill-mention";
 import NotesService from "@/services/notes";
+import TagsService from "@/services/tags";
 
 const atValues = [
   {
@@ -132,7 +133,7 @@ const hashValues = [
     myCustomProperty: "custom value"
   }
 ];
-
+var global_tags = [];
 export default {
   name: "NewNote",
   components: {
@@ -142,6 +143,7 @@ export default {
     return {
       imageData: "",
       content: "",
+      tags: [],
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -156,7 +158,7 @@ export default {
           imageDrop: true,
           imageResize: {},
           mention: {
-            allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+            allowedChars: /^[A-Za-z\sÅÄÖåäöА-Яа-я]*$/,
             mentionDenotationChars: ["@", "#"],
             dataAttributes: ["myCustomProperty"],
             source: function(searchTerm, renderList, mentionChar) {
@@ -164,15 +166,20 @@ export default {
               if (mentionChar === "@") {
                 values = atValues;
               } else {
-                values = hashValues;
+                values = global_tags;
               }
               if (searchTerm.length === 0) {
-                renderList(values, searchTerm);
+                renderList(values.slice(0, 8), searchTerm);
               } else {
-                const matches = values.filter(tag =>
+                let matches = values.filter(tag =>
                   tag.value.startsWith(searchTerm)
                 );
-                renderList(matches, searchTerm);
+
+              matches.sort(function(a, b){
+                  return a.value.length - b.value.length;
+              });
+
+                renderList(matches.slice(0, 8), searchTerm);
               }
             }
           }
@@ -181,7 +188,10 @@ export default {
     };
   },
 
-  created() {},
+  async created() {
+      const tags = await TagsService.all();
+      global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myCustomProperty': 'custom value'}});
+  },
 
   methods: {
     async handleSavingContent() {
