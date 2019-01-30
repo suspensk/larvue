@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Tag;
 use App\Note;
 use App\Image;
 use Validator;
@@ -86,7 +87,18 @@ class NoteController extends Controller
         }
         $input['user_id'] = $user['id'];
         $note = Note::create($input);
+        $newTags = json_decode($request->newtags);
         $tags = json_decode($request->tags);
+        if(!empty($newTags)){
+            foreach($newTags as $newTagValue){
+                $newTag = [];
+                $newTag['user_id'] = $user['id'];
+                $newTag['name'] = $newTagValue;
+                $newTagObj = Tag::create($newTag);
+                $tags[] = $newTagObj->id;
+            }
+        }
+
         if(!empty($tags)){
             foreach($tags as $tag){
                 $note->tags()->attach($tag);

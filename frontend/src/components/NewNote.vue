@@ -174,7 +174,9 @@ export default {
                 let matches = values.filter(tag =>
                   tag.value.startsWith(searchTerm)
                 );
-
+                if(matches.length ==0){
+                    matches = [{'id':0,'myTagId':0,'value':searchTerm}];
+                }
               matches.sort(function(a, b){
                   return a.value.length - b.value.length;
               });
@@ -204,15 +206,21 @@ export default {
           htmlObject.innerHTML = this.content;
           let tagsList = htmlObject.querySelectorAll(".mention");
           let tagsData = [];
+          let tagsDataNew = [];
           tagsList.forEach(
               function(tag) {
-                  tagsData.push(tag.dataset.id);
+                  if(tag.dataset.id != 0){
+                      tagsData.push(tag.dataset.id);
+                  } else {
+                      tagsDataNew.push(tag.dataset.value);
+                  }
               }
           );
 
         fd.append('text', this.content);
         fd.append('privacy', 0);
         fd.append('tags', JSON.stringify(tagsData));
+        fd.append('newtags', JSON.stringify(tagsDataNew));
 
     //     NotesService.add(this.content).then(resp => {}).catch(err => {}); the same
         const res = await NotesService.add(fd);
