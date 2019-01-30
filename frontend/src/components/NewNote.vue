@@ -160,7 +160,7 @@ export default {
           mention: {
             allowedChars: /^[A-Za-z\sÅÄÖåäöА-Яа-я]*$/,
             mentionDenotationChars: ["@", "#"],
-            dataAttributes: ["myCustomProperty"],
+            dataAttributes: ["myTagId"],
             source: function(searchTerm, renderList, mentionChar) {
               let values;
               if (mentionChar === "@") {
@@ -190,7 +190,7 @@ export default {
 
   async created() {
       const tags = await TagsService.all();
-      global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myCustomProperty': 'custom value'}});
+      global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
   },
 
   methods: {
@@ -200,9 +200,19 @@ export default {
         if ( document.querySelector("#fileinput").files[0] != undefined) {
           fd.append('image', document.querySelector("#fileinput").files[0]);
         }
+          var htmlObject = document.createElement('div');
+          htmlObject.innerHTML = this.content;
+          let tagsList = htmlObject.querySelectorAll(".mention");
+          let tagsData = [];
+          tagsList.forEach(
+              function(tag) {
+                  tagsData.push(tag.dataset.id);
+              }
+          );
+
         fd.append('text', this.content);
         fd.append('privacy', 0);
-        fd.append('tags', {});
+        fd.append('tags', JSON.stringify(tagsData));
 
     //     NotesService.add(this.content).then(resp => {}).catch(err => {}); the same
         const res = await NotesService.add(fd);

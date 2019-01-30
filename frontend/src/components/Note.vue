@@ -45,6 +45,13 @@
       <span class="headline">{{ note.title }}</span>
     </v-card-title>
     <v-card-text v-html="note.text"></v-card-text>
+      <v-card-title primary-title>
+      <span class="grey--text">
+      Used tags:
+      <span v-for="tag,tagIndex in note.tags" :id="tag.id">
+        <a v-bind:href="'/notes?tags='+ tag.name">#{{tag.name}}</a>&nbsp;&nbsp;
+     </span></span>
+      </v-card-title>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn  v-if="note.limited" @click.prevent="more()" flat class="blue--text">Read More</v-btn>
