@@ -5,6 +5,11 @@ module.exports = {
   // proxy API requests to Valet during development
   devServer: {
     historyApiFallback: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "*",
+      "Access-Control-Allow-Headers": "*"
+    },
     proxy: {
       '/api': {
         target: 'http://larvue',

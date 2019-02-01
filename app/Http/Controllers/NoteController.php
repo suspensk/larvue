@@ -130,6 +130,7 @@ class NoteController extends Controller
     public function destroy(Note $note)
     {
         $note->images()->delete();
+        $note->tags()->detach();
         $note->delete();
         return response()->json(['success'=>0]);
     }
