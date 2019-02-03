@@ -3,21 +3,6 @@
     class="my-3"
     hover
   >
-      <modal v-if="showModal" @close="showModal = false">
-            <span slot="body">
-                are you sure you want to delete?
-            </span>
-          <span slot="footer">
-                         <button class="modal-default-button" @click="deleteNote()">
-                          YES
-                         </button>
-                <button class="modal-default-button" @click="showModal = false">
-                          NO
-                         </button>
-                    </span>
-          <h3 slot="header">Confirmation</h3>
-      </modal>
-
     <v-toolbar color="white" dense flat>
       <v-list-tile>
         <v-list-tile-avatar>
@@ -49,7 +34,7 @@
             <v-btn icon slot="activator"> <v-icon>more_vert</v-icon> </v-btn>
 
             <v-list class="pa-0">
-                <v-list-tile ripple="ripple" rel="noopener" @click.stop="showModal = true; curNote=note">
+                <v-list-tile ripple="ripple" rel="noopener" @click.stop="$emit('show-modal');">
                     <v-list-tile-action> <v-icon>remove_circle_outline </v-icon> </v-list-tile-action>
                     <v-list-tile-content>
                         <v-list-tile-title>Delete</v-list-tile-title>
@@ -108,14 +93,14 @@
 
 <script>
 import NotesService from "@/services/notes";
-import Modal from './ModalWindow';
+
 export default {
   name: "Note",
   props: ["post"],
   data() {
     return {
       note: this.post,
-      showModal: false,
+
     };
   },
   computed: {
@@ -130,17 +115,10 @@ export default {
       this.note.text = text;
       this.note.limited=false;
     },
-      async deleteNote() {
-          this.showModal = false;
-          let note_id = this.curNote.id;
-          let that = this;
-          await NotesService.delete(this.note.id);
-          this.$emit('reload-list');
 
-      },
   },
     components: {
-        Modal
+      //  Modal
     }
 };
 </script>

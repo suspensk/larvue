@@ -1,10 +1,24 @@
 <template>
   <v-container fluid>
+      <modal v-if="showModal" @close="showModal = false">
+            <span slot="body">
+                are you sure you want to delete?
+            </span>
+          <span slot="footer">
+                         <button class="modal-default-button" @click="deleteNote()">
+                          YES
+                         </button>
+                         <button class="modal-default-button" @click="showModal = false">
+                          NO
+                         </button>
+                    </span>
+          <h3 slot="header">Confirmation</h3>
+      </modal>
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
         <new-note @reload-list="init()" v-if="$store.getters.isAuthenticated"></new-note>
         <div v-for="post in notes" :key="post.id">
-          <note @reload-list="init()" :post="post"></note>
+          <note @reload-list="init()" @show-modal="showModal = true; curNote = post" :post="post"></note>
         </div>
       </v-flex>
     </v-layout>
@@ -15,16 +29,19 @@
 import Note from "@/components/Note";
 import NewNote from "@/components/NewNote";
 import NotesService from "@/services/notes";
-
+import Modal from '@/components/ModalWindow';
 export default {
   name: "Notes",
   components: {
     Note,
-    NewNote
+    NewNote,
+    Modal
   },
   data() {
     return {
-      notes: []
+      notes: [],
+      showModal: false,
+      curNote: 0
     };
   },
 
@@ -41,6 +58,13 @@ export default {
       const res = await NotesService.all();
       this.notes = res;
     },
+
+      async deleteNote() {
+          this.showModal = false;
+          let note_id = this.curNote.id;
+          await NotesService.delete(note_id);
+          this.init();
+      },
   }
 };
 </script>
