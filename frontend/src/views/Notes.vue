@@ -13,6 +13,16 @@
               </v-card>
           </template>
       </modal>
+      <v-snackbar
+              v-model="snackbar"
+              :multi-line="false"
+              :right="true"
+              :timeout="3000"
+              :top="true"
+              :color="snacbarColor"
+      >
+          {{snackbarText}}
+      </v-snackbar>
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
         <new-note @reload-list="init()" v-if="$store.getters.isAuthenticated"></new-note>
@@ -40,7 +50,10 @@ export default {
     return {
       notes: [],
       dialog: false,
-      curNote: 0
+      curNote: 0,
+      snackbar: false,
+      snackbarText : "test notice",
+      snacbarColor: "primary"
     };
   },
 
@@ -60,8 +73,18 @@ export default {
 
       async deleteNote() {
           let note_id = this.curNote.id;
-          await NotesService.delete(note_id);
-          this.init();
+          try {
+              await NotesService.delete(note_id);
+              this.snackbarText = "Note successfully deleted";
+              this.snacbarColor = "primary";
+              this.snackbar = true;
+              this.init();
+          } catch(e) {
+              this.snackbarText = "Error while deleting note";
+              this.snacbarColor = "red";
+              this.snackbar = true;
+          }
+
       },
   }
 };

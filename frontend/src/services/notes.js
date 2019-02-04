@@ -24,25 +24,6 @@ export default {
   },
 
   delete: async id => {
-      await $http.delete('/notes/' + id);
-
-      /*axios.delete('api/notes/' + note_id, {}).then(response => {
-          that.$notify({
-              group: 'foo',
-              title: 'Success',
-              type: 'success',
-              text: 'deleted successfully'
-          });
-          console.log(response.data);
-          this.init();
-      }).catch(error => {
-          that.$notify({
-              group: 'foo',
-              title: 'Error',
-              type: 'error',
-              text: error.response.data.message
-          });
-          //  console.error(error.response.data.error);
-      });*/
+      await $http.delete('/notes/' , id);
   }
 };
