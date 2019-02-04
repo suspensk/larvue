@@ -1,24 +1,23 @@
 <template>
   <v-container fluid>
-      <modal v-if="showModal" @close="showModal = false">
-            <span slot="body">
-                are you sure you want to delete?
-            </span>
-          <span slot="footer">
-                         <button class="modal-default-button" @click="deleteNote()">
-                          YES
-                         </button>
-                         <button class="modal-default-button" @click="showModal = false">
-                          NO
-                         </button>
-                    </span>
-          <h3 slot="header">Confirmation</h3>
+      <modal v-if="dialog" @close="dialog = false">
+          <template slot="card">
+              <v-card>
+                  <v-card-title class="headline">Confirmation</v-card-title>
+                  <v-card-text>Are you sure you want to delete?</v-card-text>
+                  <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="green darken-1" flat @click="dialog = false">NO</v-btn>
+                      <v-btn color="red darken-1" flat @click="dialog = false; deleteNote();">YES</v-btn>
+                  </v-card-actions>
+              </v-card>
+          </template>
       </modal>
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
         <new-note @reload-list="init()" v-if="$store.getters.isAuthenticated"></new-note>
         <div v-for="post in notes" :key="post.id">
-          <note @reload-list="init()" @show-modal="showModal = true; curNote = post" :post="post"></note>
+          <note @reload-list="init()" @show-modal="dialog = true; curNote = post" :post="post"></note>
         </div>
       </v-flex>
     </v-layout>
@@ -40,7 +39,7 @@ export default {
   data() {
     return {
       notes: [],
-      showModal: false,
+      dialog: false,
       curNote: 0
     };
   },
@@ -60,7 +59,6 @@ export default {
     },
 
       async deleteNote() {
-          this.showModal = false;
           let note_id = this.curNote.id;
           await NotesService.delete(note_id);
           this.init();
