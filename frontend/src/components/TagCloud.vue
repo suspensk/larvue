@@ -5,7 +5,14 @@
     font-family="Roboto"
     :spacing="1 / 5"
     :font-size-ratio="1 / 4"
-  />
+  >
+    <template slot-scope="{text, weight, word}">
+      <div style="cursor: pointer;" @click="onWordClick(word)">
+        {{ text }}
+      </div>
+    </template>
+
+  </vue-word-cloud>
 </template>
 
 <script>
@@ -34,7 +41,11 @@ export default {
     });
   },
 
-  methods: {}
+  methods: {
+    onWordClick: function(word) {
+      this.$router.push("/notes?tags="+ word[0]);
+    },
+  }
 };
 </script>
 
