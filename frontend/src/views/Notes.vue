@@ -38,6 +38,7 @@
 import Note from "@/components/Note";
 import NewNote from "@/components/NewNote";
 import NotesService from "@/services/notes";
+import TagsService from "@/services/tags";
 import Modal from '@/components/ModalWindow';
 export default {
   name: "Notes",
@@ -49,6 +50,7 @@ export default {
   data() {
     return {
       notes: [],
+      tags:[],
       dialog: false,
       curNote: 0,
       snackbar: false,
@@ -67,7 +69,17 @@ export default {
 
   methods: {
     async init() {
-      const res = await NotesService.all();
+        if(this.tags.length ==0 && this.$route.query.tags !== undefined ){
+            let tags_names = this.$route.query.tags.split(",");
+            this.tags = await TagsService.all(tags_names);
+        }
+
+       var tags = [];
+        if(Object.keys(this.tags).length != 0){
+            tags = this.tags.map(a => a.id);
+        }
+
+      const res = await NotesService.all(tags);
       this.notes = res;
     },
 

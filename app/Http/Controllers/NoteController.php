@@ -14,13 +14,12 @@ class NoteController extends Controller
     public function index(Request $request)
     {
         $user = $request->user('api');
-        if (isset($request->q)){
-            $q = json_decode($request->q);
-            if (!empty($q->tags)){
-                $callback = function($subQuery) use ($q) {
-                    $subQuery->whereIn('tag_id', $q->tags);
-                };
-            }
+        if (!empty($request->tags)){
+            $tags = $request->tags;
+            $callback = function($subQuery) use ($tags) {
+                $subQuery->whereIn('tag_id', $tags);
+            };
+
         }
 
         $query = Note::orderBy('created_at', 'desc');

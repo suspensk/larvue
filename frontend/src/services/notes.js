@@ -1,8 +1,14 @@
 import $http from "./client";
 
 export default {
-  all: async () => {
-    const resp = await $http.get(`/notes`);
+  all: async tags => {
+    let props = {};
+    if(tags != undefined && tags.length) {
+      props.params = {
+        tags: tags
+      };
+    }
+    const resp = await $http.get(`/notes`, props);
     return resp.data;
   },
 
@@ -24,6 +30,6 @@ export default {
   },
 
   delete: async id => {
-      await $http.delete('/notes/' , id);
+      await $http.delete(`/notes/${id}`);
   }
 };
