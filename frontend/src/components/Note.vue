@@ -15,9 +15,13 @@
           <v-list-tile-title>{{ note.user.name }}</v-list-tile-title>
          <!-- <v-list-tile-sub-title v-if="note.privacy == 0">public</v-list-tile-sub-title>
           <v-list-tile-sub-title v-else-if="note.privacy == 2">private</v-list-tile-sub-title>-->
-          <v-list-tile-sub-title>{{note.created_at}},
-             <span v-if="note.privacy == 0">public</span>
-            <span v-else-if="note.privacy == 2">private</span>
+          <v-list-tile-sub-title>{{note.created_at}}
+              <span v-if="note.privacy == 0">
+                   <v-icon>public</v-icon> public
+              </span>
+              <span v-else>
+                   <v-icon>lock</v-icon> private
+              </span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
       </v-list-tile>

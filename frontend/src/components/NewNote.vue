@@ -14,7 +14,7 @@
       <v-btn icon> <v-icon>link</v-icon> </v-btn>
       <v-btn icon> <v-icon>camera</v-icon> </v-btn>
       <template v-if="privacy == 0">
-        <v-btn @click="privacy = 1" icon> <v-icon>public</v-icon></v-btn> public
+        <v-btn @click="privacy = 2" icon> <v-icon>public</v-icon></v-btn> public
       </template>
       <template v-else>
         <v-btn @click="privacy = 0" icon> <v-icon>lock</v-icon></v-btn> private
