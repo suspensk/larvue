@@ -21,6 +21,7 @@
         "vue-image-zoom": "^1.0.6"
     },
     "dependencies": {
+        "moment": "^2.24.0",
         "vue-notification": "^1.3.13",
         "vue-picture-input": "^2.1.6",
         "vue-router": "^3.0.1",

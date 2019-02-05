@@ -12,16 +12,19 @@
         </v-list-tile-avatar>
 
         <v-list-tile-content class="pl-0">
-          <v-list-tile-title>{{ note.user.name }}</v-list-tile-title>
-         <!-- <v-list-tile-sub-title v-if="note.privacy == 0">public</v-list-tile-sub-title>
-          <v-list-tile-sub-title v-else-if="note.privacy == 2">private</v-list-tile-sub-title>-->
-          <v-list-tile-sub-title>{{note.created_at}}
+          <v-list-tile-title>
+              {{ note.user.name }}
               <span v-if="note.privacy == 0">
                    <v-icon>public</v-icon>
               </span>
               <span v-else>
                    <v-icon>lock</v-icon>
               </span>
+          </v-list-tile-title>
+         <!-- <v-list-tile-sub-title v-if="note.privacy == 0">public</v-list-tile-sub-title>
+          <v-list-tile-sub-title v-else-if="note.privacy == 2">private</v-list-tile-sub-title>-->
+          <v-list-tile-sub-title>
+              <span>{{note.created_at | formatDate}}</span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
       </v-list-tile>
@@ -97,6 +100,7 @@
 
 <script>
 import NotesService from "@/services/notes";
+import moment from 'moment';
 
 export default {
   name: "Note",
@@ -112,6 +116,13 @@ export default {
       return this.note.privacy === 0;
     }*/
   },
+    filters: {
+        formatDate: function (value) {
+            if (value) {
+                return moment(String(value)).calendar();
+            }
+        }
+    },
   methods: {
     async more() {
      // e.preventDefault();
