@@ -13,6 +13,12 @@
       <v-btn icon> <v-icon>attach_file</v-icon> </v-btn>
       <v-btn icon> <v-icon>link</v-icon> </v-btn>
       <v-btn icon> <v-icon>camera</v-icon> </v-btn>
+      <template v-if="privacy == 0">
+        <v-btn @click="privacy = 1" icon> <v-icon>public</v-icon></v-btn> public
+      </template>
+      <template v-else>
+        <v-btn @click="privacy = 0" icon> <v-icon>lock</v-icon></v-btn> private
+      </template>
       <v-spacer></v-spacer>
       <v-btn flat icon @click="handleSavingContent">
         <v-icon>send</v-icon>
@@ -91,48 +97,7 @@ const atValues = [
     myCustomProperty: "custom value"
   }
 ];
-const hashValues = [
-  {
-    id: "5a97b2a402de91c5b6c3e8a5",
-    value: "josiePrice",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a464a8ff2d0996d2eg",
-    value: "elvaShowman",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4ecb768a2092a298c",
-    value: "ellaCoach",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a418b984d2aff97658",
-    value: "knowlesWalis",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4436c2c9acc6b5ad1",
-    value: "hansonWebster",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4436c2c9acc6b5ad2",
-    value: "Maria Cruiser",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4436c2c9acc6b5ad3",
-    value: "Pablo Escobeer",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4436c2c9acc6b5ad4",
-    value: "Richard Schmidt",
-    myCustomProperty: "custom value"
-  }
-];
+
 var global_tags = [];
 export default {
   name: "NewNote",
@@ -144,6 +109,7 @@ export default {
       imageData: "",
       content: "",
       tags: [],
+      privacy: 0,
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -218,7 +184,7 @@ export default {
           );
 
         fd.append('text', this.content);
-        fd.append('privacy', 0);
+        fd.append('privacy', this.privacy);
         fd.append('tags', JSON.stringify(tagsData));
         fd.append('newtags', JSON.stringify(tagsDataNew));
 
