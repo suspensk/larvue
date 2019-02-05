@@ -29,9 +29,9 @@ export default {
 
   async created() {
     const res = await TagsService.all();
-//    res.tags.forEach(tag => {
-//      this.words.push([tag.tag, tag.count]);
-//    });
+    res.forEach(tag => {
+      this.words.push([tag.name, tag.user_id]);
+    });
   },
 
   methods: {}
