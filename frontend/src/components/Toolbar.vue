@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app dense>
     <v-toolbar-title class="headline text-uppercase">
-      <span>Notes</span> <span class="font-weight-light">.me</span>
+      <span>Kurbs</span> <span class="font-weight-light">.me</span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu

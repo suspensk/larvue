@@ -64,7 +64,7 @@ export default {
         },
         { heading: "Tags" }
       ],
-      drawer: true
+      drawer: false
     };
   },
 
