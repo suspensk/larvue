@@ -66,7 +66,12 @@ export default {
 
     this.init();
   },
-
+    watch: {
+        '$route' (to, from) {
+            Object.assign(this.$data, this.$options.data())
+            this.init();
+        }
+    },
   methods: {
     async init() {
         if(this.tags.length ==0 && this.$route.query.tags !== undefined ){

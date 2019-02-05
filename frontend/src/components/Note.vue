@@ -17,10 +17,10 @@
           <v-list-tile-sub-title v-else-if="note.privacy == 2">private</v-list-tile-sub-title>-->
           <v-list-tile-sub-title>{{note.created_at}}
               <span v-if="note.privacy == 0">
-                   <v-icon>public</v-icon> public
+                   <v-icon>public</v-icon>
               </span>
               <span v-else>
-                   <v-icon>lock</v-icon> private
+                   <v-icon>lock</v-icon>
               </span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
@@ -85,7 +85,7 @@
       <span class="grey--text">
       Used tags:
       <span v-for="tag,tagIndex in note.tags" :id="tag.id">
-        <a v-bind:href="'/notes?tags='+ tag.name">#{{tag.name}}</a>&nbsp;&nbsp;
+        <router-link :to="'/notes?tags='+ tag.name">#{{tag.name}}</router-link>&nbsp;&nbsp;
      </span></span>
       </v-card-title>
     <v-card-actions>
