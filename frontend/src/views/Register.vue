@@ -1,15 +1,5 @@
 <template>
   <v-container fluid fill-height>
-    <v-snackbar
-            v-model="snackbar"
-            :multi-line="false"
-            :right="true"
-            :timeout="3000"
-            :top="true"
-            :color="snacbarColor"
-    >
-      {{snackbarText}}
-    </v-snackbar>
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md4 lg4>
         <v-card class="elevation-1 pa-3">
@@ -69,9 +59,6 @@
 export default {
   data: () => ({
     loading: false,
-    snackbar: false,
-    snackbarText : "test notice",
-    snacbarColor: "primary",
     model: {
       username: "John Smith",
       email: "email@exa.com",
@@ -87,17 +74,13 @@ export default {
       this.$store
         .dispatch("REGISTRATION_REQUEST", this.model)
         .then(() => {
-          this.snackbarText = "Your registration has been successfully completed";
-          this.snacbarColor = "primary";
-          this.snackbar = true;
+          this.$radio.$emit('show-notice', 'primary', 'Your registration has been successfully completed');
           let that = this;
           setTimeout(function(){that.$router.push("/");}, 3000);
 
         })
         .catch(() => {
-          this.snackbarText = "Error while registering";
-          this.snacbarColor = "red";
-          this.snackbar = true;
+          this.$radio.$emit('show-notice', 'red', 'Error while registering');
           this.model.password = "";
           this.model.password_confirmation = "";
           this.loading = false;
