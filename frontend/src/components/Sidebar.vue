@@ -62,6 +62,14 @@ export default {
           to: { path: "/notes" },
           chip: 5
         },
+        {
+          title: "Login",
+          to: { path: "/login" },
+        },
+        {
+          title: "Register",
+          to: { path: "/register" },
+        },
         { heading: "Tags" }
       ],
       drawer: false

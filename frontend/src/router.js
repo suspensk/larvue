@@ -32,7 +32,7 @@ export default new Router({
       path: "/register",
       name: "register",
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/Login.vue")
+        import(/* webpackChunkName: "about" */ "./views/Register.vue")
     },
     {
       path: "/settings",

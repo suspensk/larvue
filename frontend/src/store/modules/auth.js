@@ -49,7 +49,39 @@ const actions = {
       localStorage.removeItem("jwt"); // clear your user's token from localstorage
       resolve();
     });
-  }
+  },
+  ["REGISTRATION_REQUEST"]: ({ commit }, user) => {
+    return new Promise((resolve, reject) => {
+      // The Promise used for router redirect in login
+      commit("AUTH_REQUEST");
+
+      const data = {
+        name: user.username,
+        email: user.email,
+        password: user.password,
+        c_password : user.password_confirmation
+      };
+      // TODO: take from config
+      axios({
+        url: "/api/register",
+        data,
+        method: "POST"
+      })
+          .then(resp => {
+            const token = resp.data.success.token;
+            localStorage.setItem("jwt", token); // store the token in localstorage
+            commit("AUTH_SUCCESS", token);
+            // you have your token, now log in your user :)
+            //dispatch("USER_REQUEST");
+            resolve(resp);
+          })
+          .catch(err => {
+            commit("AUTH_ERROR", err);
+            localStorage.removeItem("jwt"); // if the request fails, remove any possible user token if possible
+            reject(err);
+          });
+    });
+  },
 };
 
 // basic mutations, showing loading, success, error to reflect the api call status and the token when loaded
