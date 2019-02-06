@@ -64,16 +64,25 @@ export default {
     async init() {
         if(this.tags.length ==0 && this.$route.query.tags !== undefined ){
             let tags_names = this.$route.query.tags.split(",");
-            this.tags = await TagsService.all(tags_names);
+            try {
+                this.tags = await TagsService.all(tags_names);
+            } catch (e) {
+                this.$radio.$emit('show-notice', 'red', 'Error tags loading');
+            }
+
         }
 
        var tags = [];
         if(Object.keys(this.tags).length != 0){
             tags = this.tags.map(a => a.id);
         }
+      try {
+          const res = await NotesService.all(tags);
+          this.notes = res;
+      }  catch (e) {
+          this.$radio.$emit('show-notice', 'red', 'Error notes loading');
+      }
 
-      const res = await NotesService.all(tags);
-      this.notes = res;
     },
 
       async deleteNote() {
