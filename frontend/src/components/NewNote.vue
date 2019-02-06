@@ -12,7 +12,12 @@
     <v-card-actions>
       <v-btn icon> <v-icon>attach_file</v-icon> </v-btn>
       <v-btn icon> <v-icon>link</v-icon> </v-btn>
-      <v-btn icon> <v-icon>camera</v-icon> </v-btn>
+      <v-btn icon>
+        <div class="upload-btn-wrapper">
+          <v-icon>camera</v-icon>
+          <input id="fileinput" type="file" name="myfile" @change="previewImage" accept="image/*" />
+        </div>
+         </v-btn>
       <template v-if="privacy == 0">
         <v-btn @click="privacy = 2" icon> <v-icon>public</v-icon></v-btn> public
       </template>
@@ -26,8 +31,10 @@
     </v-card-actions>
     <div>
       <div class="file-upload-form">
-        Upload an image file:
-        <input id="fileinput" type="file" @change="previewImage" accept="image/*">
+       <!-- <input id="fileinput" type="file" @change="previewImage" accept="image/*">
+-->
+
+
       </div>
       <div v-if="imageData.length > 0">
         <button @click="removeImage">Remove image</button>
@@ -233,6 +240,20 @@ export default {
     background-color: white;
     border: 1px solid #DDD;
     padding: 5px;
+  }
+
+  .upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+  
+  .upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
   }
 
 </style>
