@@ -16,9 +16,9 @@
 
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
-        <new-note @reload-list="init()" v-if="$store.getters.isAuthenticated"></new-note>
+        <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated"></new-note>
         <div v-for="post in notes" :key="post.id">
-          <note @reload-list="init()" @show-modal="dialog = true; curNote = post" :post="post"></note>
+          <note @reload-list="init()" @show-modal="dialog = true; curNote = post" @edit-note="editNote(); curNote = post" :post="post"></note>
         </div>
       </v-flex>
     </v-layout>
@@ -94,6 +94,17 @@ export default {
           } catch(e) {
               this.$radio.$emit('show-notice', 'red', 'Error while deleting note');
           }
+      },
+      async editNote() {
+          let note_id = this.curNote.id;
+          this.$refs.newNote.content = this.curNote.text;
+//          try {
+//              await NotesService.delete(note_id);
+//              this.$radio.$emit('show-notice', 'primary', 'Note successfully deleted');
+//              this.init();
+//          } catch(e) {
+//              this.$radio.$emit('show-notice', 'red', 'Error while deleting note');
+//          }
       },
   }
 };
