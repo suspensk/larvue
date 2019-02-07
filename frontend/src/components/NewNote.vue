@@ -170,7 +170,6 @@ export default {
 
   methods: {
     async handleSavingContent() {
-      try {
         var fd = new FormData();
         if ( document.querySelector("#fileinput").files[0] != undefined) {
           fd.append('image', document.querySelector("#fileinput").files[0]);
@@ -196,13 +195,15 @@ export default {
         fd.append('newtags', JSON.stringify(tagsDataNew));
 
     //     NotesService.add(this.content).then(resp => {}).catch(err => {}); the same
-        const res = await NotesService.add(fd);
-        this.$emit('reload-list');
-        this.content = "";
-        this.removeImage();
-      } catch (e) {
-
-      }
+        try {
+          const res = await NotesService.add(fd);
+          this.$emit('reload-list');
+          this.content = "";
+          this.removeImage();
+          this.$radio.$emit('show-notice', 'primary', 'Note added successfully');
+        } catch (e) {
+          this.$radio.$emit('show-notice', 'red', e);
+        }
     },
     previewImage: function(event) {
       // Reference to the DOM input element
@@ -247,7 +248,7 @@ export default {
     overflow: hidden;
     display: inline-block;
   }
-  
+
   .upload-btn-wrapper input[type=file] {
     font-size: 100px;
     position: absolute;

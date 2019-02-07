@@ -82,7 +82,7 @@ class NoteController extends Controller
 
         if ($validator->fails()) {
             $errorString = implode("<br/>",$validator->messages()->all());
-            return response()->json(['message' => $errorString], 403);
+            return response()->json(['errorText' => $errorString], 403);
         }
         $input['user_id'] = $user['id'];
         $note = Note::create($input);

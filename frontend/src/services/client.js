@@ -17,8 +17,16 @@ $http.interceptors.request.use(
 
 $http.interceptors.response.use(
   function(response) {
+    //  console.log(response)
     if (response.status === 401) {
       console.log("Unauthorized"); // logout
+    }
+    if(response.status !== 200){
+        let errorText = response.statusText;
+        if(response.data && response.data.errorText){
+            errorText = response.data.errorText;
+        }
+        throw errorText;
     }
     return response;
   },

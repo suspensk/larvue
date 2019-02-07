@@ -80,7 +80,7 @@ export default {
           const res = await NotesService.all(tags);
           this.notes = res;
       }  catch (e) {
-          this.$radio.$emit('show-notice', 'red', 'Error notes loading');
+          this.$radio.$emit('show-notice', 'red', e);
       }
 
     },
