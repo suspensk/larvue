@@ -121,6 +121,25 @@ class NoteController extends Controller
         return response()->json(['success' => $success]);
     }
 
+    public function update (Request $request, $id) {
+        $user = $request->user('api');
+        $input = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'text' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $errorString = implode("<br/>",$validator->messages()->all());
+            return response()->json(['errorText' => $errorString], 403);
+        }
+        $input['user_id'] = $user['id'];
+        $note = Note::find($id)->update(['text' => 'edited!!']);
+
+      //  $note = Note::create($input);
+        return response()->json(['success' => "EDITED" ]);
+    }
+
     public function show(Note $note)
     {
         return response()->json($note);

@@ -7,6 +7,7 @@ Route::post('register', 'UserController@register');
 //Route::get('notes', 'NoteController@index');
 
 Route::resource('/notes', 'NoteController');
+Route::post('notes/{id}', 'NoteController@update'); // put does not works in axios
 Route::resource('/tags', 'TagController');
 
 Route::group(['middleware' => 'auth:api'], function () {

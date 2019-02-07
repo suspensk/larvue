@@ -1,5 +1,12 @@
 <template>
-  <v-card
+  <new-note
+          v-if="mode=='edit' && $store.getters.isAuthenticated"
+          ref="newNote"
+          :mode="'edit'"
+          :noteId="note.id"
+          @reload-list="$emit('reload-list'); mode='view'; "
+  ></new-note>
+  <v-card v-else
     class="my-3"
     hover
   >
@@ -48,7 +55,7 @@
                     </v-list-tile-content>
                 </v-list-tile>
 
-                <v-list-tile ripple="ripple" rel="noopener" @click.stop="$emit('edit-note');">
+                <v-list-tile ripple="ripple" rel="noopener" @click.stop="mode='edit'; editNote();">
                     <v-list-tile-action> <v-icon>edit</v-icon> </v-list-tile-action>
                     <v-list-tile-content>
                         <v-list-tile-title>Edit</v-list-tile-title>
@@ -100,6 +107,7 @@
 
 <script>
 import NotesService from "@/services/notes";
+import NewNote from "@/components/NewNote";
 import moment from 'moment';
 
 export default {
@@ -108,6 +116,7 @@ export default {
   data() {
     return {
       note: this.post,
+      mode: "view"
 
     };
   },
@@ -130,9 +139,14 @@ export default {
       this.note.text = text;
       this.note.limited=false;
     },
-
+    editNote(){
+        this.$nextTick(() => {
+            this.$refs.newNote.content = this.note.text;
+        });
+    }
   },
     components: {
+        NewNote
       //  Modal
     }
 };

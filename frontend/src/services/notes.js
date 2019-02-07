@@ -28,6 +28,10 @@ export default {
     const resp = await $http.post('/notes', fd, {headers: { 'content-type': 'multipart/form-data' }});
     return resp.data;
   },
+  update: async fd => {
+    const resp = await $http.post(`/notes/${fd.get('id')}`, fd, {headers: { 'content-type': 'multipart/form-data' }});
+    return resp.data;
+  },
 
   delete: async id => {
       await $http.delete(`/notes/${id}`);

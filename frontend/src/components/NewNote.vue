@@ -111,6 +111,7 @@ export default {
   components: {
     VueEditor
   },
+  props: ["mode", "noteId"],
   data() {
     return {
       imageData: "",
@@ -170,6 +171,7 @@ export default {
 
   methods: {
     async handleSavingContent() {
+    //  alert(this.mode)
         var fd = new FormData();
         if ( document.querySelector("#fileinput").files[0] != undefined) {
           fd.append('image', document.querySelector("#fileinput").files[0]);
@@ -196,11 +198,17 @@ export default {
 
     //     NotesService.add(this.content).then(resp => {}).catch(err => {}); the same
         try {
-          const res = await NotesService.add(fd);
-          this.$emit('reload-list');
+          if(this.mode == "edit" && this.noteId != undefined){
+            fd.append('id',this.noteId);
+            const res = await NotesService.update(fd);
+          } else {
+            const res = await NotesService.add(fd);
+          }
+
           this.content = "";
           this.removeImage();
           this.$radio.$emit('show-notice', 'primary', 'Note added successfully');
+          this.$emit('reload-list');
         } catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
         }
