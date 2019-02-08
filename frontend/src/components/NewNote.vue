@@ -201,14 +201,17 @@ export default {
           if(this.mode == "edit" && this.noteId != undefined){
             fd.append('id',this.noteId);
             const res = await NotesService.update(fd);
+            this.$emit('close-editor', res);
+            this.$radio.$emit('show-notice', 'primary', 'Note saved successfully');
           } else {
             const res = await NotesService.add(fd);
+            this.$emit('reload-list');
+            this.$radio.$emit('show-notice', 'primary', 'Note added successfully');
           }
 
           this.content = "";
           this.removeImage();
-          this.$radio.$emit('show-notice', 'primary', 'Note added successfully');
-          this.$emit('reload-list');
+
         } catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
         }

@@ -1,10 +1,10 @@
 <template>
   <new-note
           v-if="mode=='edit' && $store.getters.isAuthenticated"
-          ref="newNote"
-          :mode="'edit'"
+          ref="editNote"
+          :mode="mode"
           :noteId="note.id"
-          @reload-list="$emit('reload-list'); mode='view'; "
+          @close-editor="closeEditor"
   ></new-note>
   <v-card v-else
     class="my-3"
@@ -141,9 +141,13 @@ export default {
     },
     editNote(){
         this.$nextTick(() => {
-            this.$refs.newNote.content = this.note.text;
+            this.$refs.editNote.content = this.note.text;
         });
-    }
+    },
+      closeEditor(note){
+          this.mode='view';
+          this.note = note;
+      }
   },
     components: {
         NewNote

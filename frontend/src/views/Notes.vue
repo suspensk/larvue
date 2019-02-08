@@ -62,7 +62,6 @@ export default {
     },
   methods: {
     async init() {
-        alert('init')
         if(this.tags.length ==0 && this.$route.query.tags !== undefined ){
             let tags_names = this.$route.query.tags.split(",");
             try {

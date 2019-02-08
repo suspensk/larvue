@@ -134,10 +134,10 @@ class NoteController extends Controller
             return response()->json(['errorText' => $errorString], 403);
         }
         $input['user_id'] = $user['id'];
-        $note = Note::find($id)->update(['text' => 'edited!!']);
-
-      //  $note = Note::create($input);
-        return response()->json(['success' => "EDITED" ]);
+        Note::find($id)->update(['text' => $request->text]);
+        $note = Note::with('tags')->with('images')->
+        with('user')->find($id);
+        return response()->json($note);
     }
 
     public function show(Note $note)
