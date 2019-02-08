@@ -2,7 +2,7 @@
   <v-app>
     <v-snackbar
             v-model="snackbar"
-            :multi-line="false"
+            :multi-line="true"
             :right="true"
             :timeout="3000"
             :top="true"
