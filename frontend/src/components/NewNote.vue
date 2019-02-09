@@ -200,7 +200,7 @@ export default {
         try {
           if(this.mode == "edit" && this.noteId != undefined){
             fd.append('id',this.noteId);
-            const res = await NotesService.update(fd);
+            const res = await NotesService.update(fd, this.noteId);
             this.$emit('close-editor', res);
             this.$radio.$emit('show-notice', 'primary', 'Note saved successfully');
           } else {
