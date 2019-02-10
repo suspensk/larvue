@@ -35,7 +35,7 @@ class NoteController extends Controller
         if(isset($callback)){
             $query->
             whereHas('tags', $callback)->
-            with(['tags' => $callback]);
+            with('tags');
         } else {
             $query->with('tags');
         }
