@@ -60,22 +60,21 @@ class NoteController extends Controller
         return response()->json($notes->toArray());
     }
 
+    public function addImage($file, $userId, $noteId){
+        $target_dir = __DIR__ . "/../../../public/uploads/";
+        $ext = $file->getClientOriginalExtension();
+
+        $target_file_name = base64_encode('user' .  $userId . 'time' . time()) . '.' . $ext ;
+        $this->uploadFiles($file, $target_dir, $target_file_name);
+
+        Image::create([
+            'original_name' => $file->getClientOriginalName(),
+            'name' => $target_file_name,
+            'note_id' => $noteId
+        ]);
+    }
     public function store(Request $request)
     {
-        $user = $request->user('api');
-        $input = $request->all();
-        $file_flag = 0;
-        if(!empty($request->file('image'))){
-            $file = $request->file('image');
-            $target_dir = __DIR__ . "/../../../public/uploads/";
-            $ext = $file->getClientOriginalExtension();
-
-            $target_file_name = base64_encode('user' .  $user['id'] . 'time' . time()) . '.' . $ext ;
-            $this->uploadFiles($file, $target_dir, $target_file_name);
-            $file_flag = 1;
-        }
-
-
         $validator = Validator::make($request->all(), [
             'text' => 'required'
         ]);
@@ -84,8 +83,11 @@ class NoteController extends Controller
             $errorString = implode("<br/>",$validator->messages()->all());
             return response()->json(['errorText' => $errorString], 403);
         }
+
+        $user = $request->user('api');
+        $input = $request->all();
         $input['user_id'] = $user['id'];
-        $note = Note::create($input);
+
         $newTags = json_decode($request->newtags);
         $tags = json_decode($request->tags);
         if(!empty($newTags)){
@@ -98,23 +100,20 @@ class NoteController extends Controller
             }
         }
 
+        $note = Note::create($input);
         if(!empty($tags)){
             foreach($tags as $tag){
                 $note->tags()->attach($tag);
             }
         }
 
-
         $note->save();
 
-     //   var_dump($note->id);
-        if($file_flag){
-            Image::create([
-                'original_name' => $file->getClientOriginalName(),
-                'name' => $target_file_name,
-                'note_id' => $note->id
-            ]);
+        if(!empty($request->file('image'))){
+            $this->addImage($request->file('image'), $user['id'], $note->id);
+
         }
+     //   var_dump($note->id);
 
         $success['text'] = $note->text;;
 
