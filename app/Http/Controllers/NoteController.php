@@ -73,6 +73,19 @@ class NoteController extends Controller
             'note_id' => $noteId
         ]);
     }
+
+    public function prepareTags ($tags, $newTags, $userId){
+        if(!empty($newTags)){
+            foreach($newTags as $newTagValue){
+                $newTag = [];
+                $newTag['user_id'] = $userId;
+                $newTag['name'] = $newTagValue;
+                $newTagObj = Tag::create($newTag);
+                $tags[] = $newTagObj->id;
+            }
+        }
+        return $tags;
+    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -88,17 +101,7 @@ class NoteController extends Controller
         $input = $request->all();
         $input['user_id'] = $user['id'];
 
-        $newTags = json_decode($request->newtags);
-        $tags = json_decode($request->tags);
-        if(!empty($newTags)){
-            foreach($newTags as $newTagValue){
-                $newTag = [];
-                $newTag['user_id'] = $user['id'];
-                $newTag['name'] = $newTagValue;
-                $newTagObj = Tag::create($newTag);
-                $tags[] = $newTagObj->id;
-            }
-        }
+        $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
 
         $note = Note::create($input);
         if(!empty($tags)){
@@ -115,7 +118,7 @@ class NoteController extends Controller
         }
      //   var_dump($note->id);
 
-        $success['text'] = $note->text;;
+        $success['text'] = $note->text;
 
         return response()->json(['success' => $success]);
     }
@@ -133,6 +136,14 @@ class NoteController extends Controller
             return response()->json(['errorText' => $errorString], 403);
         }
         $input['user_id'] = $user['id'];
+        $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
+        $note = Note::with('tags')->find($id);
+        $oldTags = $note->tags;
+        $oldTagsIds = $oldTags->pluck('id')->toArray();
+
+        return response()->json($oldTagsIds);
+     //   var_dump($tags);
+
         Note::find($id)->update(['text' => $request->text]);
         $note = Note::with('tags')->with('images')->
         with('user')->find($id);

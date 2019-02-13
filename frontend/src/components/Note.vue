@@ -142,6 +142,8 @@ export default {
     editNote(){
         this.$nextTick(() => {
             this.$refs.editNote.content = this.note.text;
+            this.$refs.editNote.imageData = '/uploads/540-' + this.note.images[0].name;
+
         });
     },
       closeEditor(note){

@@ -36,10 +36,8 @@
 
 
       </div>
-      <div v-if="imageData.length > 0">
-        <button @click="removeImage">Remove image</button>
-      </div>
       <div class="image-preview" v-if="imageData.length > 0">
+        <v-btn @click="removeImage" icon> <v-icon>clear</v-icon></v-btn>
         <img class="preview" :src="imageData">
       </div>
     </div>
