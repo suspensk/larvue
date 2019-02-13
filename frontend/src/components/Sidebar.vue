@@ -72,7 +72,7 @@ export default {
         },
         { heading: "Tags" }
       ],
-      drawer: false
+      drawer: !this.$vuetify.breakpoint.smAndDown
     };
   },
 
