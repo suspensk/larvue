@@ -113,6 +113,8 @@ export default {
   data() {
     return {
       imageData: "",
+      imageRemoved: false,
+      imageFile: {},
       content: "",
       tags: [],
       privacy: 0,
@@ -175,10 +177,12 @@ export default {
       global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
     },
     async handleSavingContent() {
-    //  alert(this.mode)
         var fd = new FormData();
-        if ( document.querySelector("#fileinput").files[0] != undefined) {
-          fd.append('image', document.querySelector("#fileinput").files[0]);
+      if(this.imageFile !== {}){
+        fd.append('image', this.imageFile);
+      }
+        if(this.imageRemoved){
+          fd.append('imageRemoved', true);
         }
           var htmlObject = document.createElement('div');
           htmlObject.innerHTML = this.content;
@@ -226,6 +230,7 @@ export default {
       var input = event.target;
       // Ensure that you have a file before attempting to read it
       if (input.files && input.files[0]) {
+        this.imageFile = input.files[0];
         // create a new FileReader to read this image and convert to base64 format
         var reader = new FileReader();
         // Define a callback function to run, when FileReader finishes its job
@@ -240,6 +245,8 @@ export default {
     },
     removeImage: function(event){
       this.imageData = "";
+      this.imageRemoved = true;
+      this.imageFile = {};
       document.querySelector("#fileinput").value="";
     }
   }

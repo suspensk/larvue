@@ -105,9 +105,6 @@ class NoteController extends Controller
 
         $note = Note::create($input);
         if(!empty($tags)){
-//            foreach($tags as $tag){
-//                $note->tags()->attach($tag);
-//            }
             $note->tags()->attach($tags);
         }
 
@@ -115,7 +112,6 @@ class NoteController extends Controller
 
         if(!empty($request->file('image'))){
             $this->addImage($request->file('image'), $user['id'], $note->id);
-
         }
      //   var_dump($note->id);
 
@@ -137,11 +133,11 @@ class NoteController extends Controller
             return response()->json(['errorText' => $errorString], 403);
         }
         $input['user_id'] = $user['id'];
+        $note = Note::with('tags')->with('images')->find($id);
+
         $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
-        $note = Note::with('tags')->find($id);
         $oldTags = $note->tags;
         $oldTagsIds = $oldTags->pluck('id')->toArray();
-
         $addedTags = array_diff($tags, $oldTagsIds);
         $removedTags = array_diff($oldTagsIds, $tags);
         if(!empty($addedTags)){
@@ -150,7 +146,16 @@ class NoteController extends Controller
 
         if(!empty($removedTags)){
             $note->tags()->detach($removedTags);
+        }
+        if($request->imageRemoved){
+            foreach($note->images as $oldImage){
+                $oldImage->delete();
+                unlink(__DIR__ . '/../../../public/uploads/'.$oldImage->name);
+            }
+        }
 
+        if(!empty($request->file('image'))){
+            $this->addImage($request->file('image'), $user['id'], $note->id);
         }
 
         $note->update(['text' => $request->text]);
