@@ -48,14 +48,14 @@
             <v-btn icon slot="activator"> <v-icon>more_vert</v-icon> </v-btn>
 
             <v-list class="pa-0">
-                <v-list-tile ripple="ripple" rel="noopener" @click.stop="$emit('show-modal');">
+                <v-list-tile v-if="$store.getters.isAuthenticated" ripple="ripple" rel="noopener" @click.stop="$emit('show-modal');">
                     <v-list-tile-action> <v-icon>remove_circle_outline </v-icon> </v-list-tile-action>
                     <v-list-tile-content>
                         <v-list-tile-title>Delete</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
 
-                <v-list-tile ripple="ripple" rel="noopener" @click.stop="mode='edit'; editNote();">
+                <v-list-tile v-if="$store.getters.isAuthenticated" ripple="ripple" rel="noopener" @click.stop="mode='edit'; editNote();">
                     <v-list-tile-action> <v-icon>edit</v-icon> </v-list-tile-action>
                     <v-list-tile-content>
                         <v-list-tile-title>Edit</v-list-tile-title>
