@@ -158,7 +158,7 @@ class NoteController extends Controller
             $this->addImage($request->file('image'), $user['id'], $note->id);
         }
 
-        $note->update(['text' => $request->text]);
+        $note->update(['text' => $request->text,'privacy' => $request->privacy]);
         $note = Note::with('tags')->with('images')->
         with('user')->find($id);
         return response()->json($note);
