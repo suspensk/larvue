@@ -163,11 +163,17 @@ export default {
   },
 
   async created() {
-      const tags = await TagsService.all();
-      global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
+    this.loadTags();
+//      const tags = await TagsService.all();
+//      global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
   },
 
   methods: {
+    async loadTags(){
+      console.log('lt');
+      const tags = await TagsService.all();
+      global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
+    },
     async handleSavingContent() {
     //  alert(this.mode)
         var fd = new FormData();
@@ -209,6 +215,7 @@ export default {
 
           this.content = "";
           this.removeImage();
+          this.loadTags();
 
         } catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
