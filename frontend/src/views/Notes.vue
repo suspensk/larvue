@@ -18,7 +18,7 @@
       <v-flex xl4 lg5 md8 xs12 offset-md3>
         <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
         <div v-for="post in notes" :key="post.id">
-          <note @reload-list="init()" @show-modal="dialog = true; curNote = post" @edit-note="editNote(); curNote = post" :post="post"></note>
+          <note @show-modal="dialog = true; curNote = post" @edit-note="editNote(); curNote = post" :post="post"></note>
         </div>
       </v-flex>
     </v-layout>
