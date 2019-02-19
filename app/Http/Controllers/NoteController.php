@@ -105,9 +105,10 @@ class NoteController extends Controller
 
         $note = Note::create($input);
         if(!empty($tags)){
-            foreach($tags as $tag){
-                $note->tags()->attach($tag);
-            }
+//            foreach($tags as $tag){
+//                $note->tags()->attach($tag);
+//            }
+            $note->tags()->attach($tags);
         }
 
         $note->save();
@@ -141,10 +142,18 @@ class NoteController extends Controller
         $oldTags = $note->tags;
         $oldTagsIds = $oldTags->pluck('id')->toArray();
 
-        return response()->json($oldTagsIds);
-     //   var_dump($tags);
+        $addedTags = array_diff($tags, $oldTagsIds);
+        $removedTags = array_diff($oldTagsIds, $tags);
+        if(!empty($addedTags)){
+            $note->tags()->attach($addedTags);
+        }
 
-        Note::find($id)->update(['text' => $request->text]);
+        if(!empty($removedTags)){
+            $note->tags()->detach($removedTags);
+
+        }
+
+        $note->update(['text' => $request->text]);
         $note = Note::with('tags')->with('images')->
         with('user')->find($id);
         return response()->json($note);
