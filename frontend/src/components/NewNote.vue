@@ -9,6 +9,9 @@
       >
       </vue-editor>
     </v-card-text>
+    <v-card-actions v-if="addingProcess" >
+      <v-progress-linear :indeterminate="true"></v-progress-linear>
+    </v-card-actions>
     <v-card-actions>
       <v-btn icon> <v-icon>attach_file</v-icon> </v-btn>
       <v-btn icon> <v-icon>link</v-icon> </v-btn>
@@ -112,6 +115,7 @@ export default {
   props: ["mode", "noteId"],
   data() {
     return {
+      addingProcess: false,
       imageData: "",
       imageRemoved: false,
       imageFile: {},
@@ -205,6 +209,7 @@ export default {
         fd.append('newtags', JSON.stringify(tagsDataNew));
 
     //     NotesService.add(this.content).then(resp => {}).catch(err => {}); the same
+      this.addingProcess = true;
         try {
           if(this.mode == "edit" && this.noteId != undefined){
             fd.append('id',this.noteId);
@@ -220,9 +225,11 @@ export default {
           this.content = "";
           this.removeImage();
           this.loadTags();
+          this.addingProcess = false;
 
         } catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
+          this.addingProcess = false;
         }
     },
     previewImage: function(event) {
@@ -257,7 +264,7 @@ export default {
 <style scoped lang="stylus">
   .file-upload-form, .image-preview {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    padding: 20px;
+  /*  padding: 20px;*/
   }
   img.preview {
     width: 200px;

@@ -17,7 +17,18 @@
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
         <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
-        <div v-for="post in notes" :key="post.id">
+        <template v-if="!notesLoaded">
+            <div class="text-xs-center">
+                <v-flex my-5>
+                    <v-progress-circular
+                            :size="70"
+                            color="primary"
+                            indeterminate
+                    ></v-progress-circular>
+                  </v-flex>
+            </div>
+        </template>
+          <div v-for="post in notes" :key="post.id">
           <note @show-modal="dialog = true; curNote = post" @edit-note="editNote(); curNote = post" :post="post"></note>
         </div>
       </v-flex>
@@ -44,6 +55,7 @@ export default {
       tags:[],
       dialog: false,
       curNote: 0,
+      notesLoaded:false,
     };
   },
 
@@ -79,6 +91,7 @@ export default {
       try {
           const res = await NotesService.all(tags);
           this.notes = res;
+          this.notesLoaded = true;
       }  catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
       }
