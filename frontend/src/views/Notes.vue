@@ -16,6 +16,7 @@
 
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
+          <tags-filter></tags-filter>
         <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
         <template v-if="!notesLoaded">
             <div class="text-xs-center">
@@ -42,12 +43,14 @@ import NewNote from "@/components/NewNote";
 import NotesService from "@/services/notes";
 import TagsService from "@/services/tags";
 import Modal from '@/components/ModalWindow';
+import TagsFilter from '@/components/Filter';
 export default {
   name: "Notes",
   components: {
     Note,
     NewNote,
-    Modal
+    Modal,
+    TagsFilter,
   },
   data() {
     return {

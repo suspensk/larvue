@@ -3,6 +3,7 @@ import Vuex from "vuex";
 
 import app from "./modules/app";
 import auth from "./modules/auth";
+import tags from "./modules/tags";
 
 import * as getters from "./getters";
 
@@ -13,7 +14,8 @@ const store = new Vuex.Store({
   getters,
   modules: {
     app,
-    auth
+    auth,
+    tags
   },
   state: {},
   mutations: {}
