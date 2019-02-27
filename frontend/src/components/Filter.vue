@@ -53,10 +53,11 @@
   import { mapGetters } from 'vuex';
 
   export default {
+    props: ["usedTags"],
     data () {
       return {
         autoUpdate: true,
-        selectedTags: ['лондон', ''],
+        selectedTags: this.usedTags,
         isUpdating: false,
         name: 'Midnight Crew',
         title: 'The summer breeze'

@@ -16,7 +16,7 @@
 
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
-          <tags-filter></tags-filter>
+          <tags-filter :usedTags="tags_names"></tags-filter>
         <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
         <template v-if="!notesLoaded">
             <div class="text-xs-center">
@@ -56,6 +56,7 @@ export default {
     return {
       notes: [],
       tags:[],
+      tags_names:[],
       dialog: false,
       curNote: 0,
       notesLoaded:false,
@@ -78,9 +79,9 @@ export default {
   methods: {
     async init() {
         if(this.tags.length ==0 && this.$route.query.tags !== undefined ){
-            let tags_names = this.$route.query.tags.split(",");
+            this.tags_names = this.$route.query.tags.split(",");
             try {
-                this.tags = await TagsService.all(tags_names);
+                this.tags = await TagsService.all(this.tags_names);
             } catch (e) {
                 this.$radio.$emit('show-notice', 'red', 'Error tags loading');
             }
