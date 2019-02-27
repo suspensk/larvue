@@ -41,6 +41,11 @@ export default {
       this.showNotice(type,text);
   })
 
+  this.$store
+          .dispatch("TAGS_REQUEST")
+          .catch((e) => {
+            this.show-notice("red",e)
+          });
   },
 
   methods: {

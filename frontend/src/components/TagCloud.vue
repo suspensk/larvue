@@ -26,21 +26,23 @@ export default {
   },
   data() {
     return {
-      words: [],
+    //  words: [],
       color: () =>
         ["#ffd077", "#3bc4c7", "#3a9eea", "#ff4e69", "#461e47"][
           Math.floor(Math.random() * 5)
         ]
     };
   },
-
-  async created() {
-    const res = await TagsService.all();
-    res.forEach(tag => {
-      this.words.push([tag.name, tag.user_id]);
-    });
+  computed: {
+    words() {
+      let wordsArr = []
+      const tags =  this.$store.getters.tags;
+      tags.forEach(tag => {
+        wordsArr.push([tag.name, tag.user_id]);
+      });
+      return wordsArr;
+    }
   },
-
   methods: {
     onWordClick: function(word) {
       this.$router.push("/notes?tags="+ word[0]);

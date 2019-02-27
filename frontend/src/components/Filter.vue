@@ -6,9 +6,9 @@
       <v-layout wrap>
           <v-flex xs12>
             <v-autocomplete
-                    v-model="friends"
+                    v-model="selectedTags"
                     :disabled="isUpdating"
-                    :items="people"
+                    :items="tags"
                     box
                     chips
                     color="blue-grey lighten-2"
@@ -50,21 +50,23 @@
   </v-card>
 </template>
 <script>
+  import { mapGetters } from 'vuex';
+
   export default {
     data () {
       return {
         autoUpdate: true,
-        friends: ['лондон', 'dddd'],
+        selectedTags: ['лондон', ''],
         isUpdating: false,
         name: 'Midnight Crew',
-        people: [],
         title: 'The summer breeze'
       }
     },
-    async created() {
-      this.init();
+    computed: {
+      tags() {
+        return this.$store.getters.tags;
+      }
     },
-
     watch: {
       isUpdating (val) {
         if (val) {
@@ -72,21 +74,10 @@
         }
       }
     },
-
     methods: {
-      init () {
-        this.$store
-                .dispatch("TAGS_REQUEST")
-                .then(() => {
-                 let tags = this.$store.getters.tags;
-                  this.people = tags;
-                })
-                .catch((e) => {
-                });
-      },
       remove (item) {
-        const index = this.friends.indexOf(item.name)
-        if (index >= 0) this.friends.splice(index, 1)
+        const index = this.selectedTags.indexOf(item.name)
+        if (index >= 0) this.selectedTags.splice(index, 1)
       }
     }
   }
