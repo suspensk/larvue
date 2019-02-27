@@ -106,13 +106,52 @@ const atValues = [
   }
 ];
 
-var global_tags = [];
 export default {
   name: "NewNote",
   components: {
     VueEditor
   },
   props: ["mode", "noteId"],
+  computed: {
+    editorSettings() {
+      var that = this;
+      return {
+        modules: {
+          imageDrop: true,
+                  imageResize: {},
+          mention: {
+            allowedChars: /^[A-Za-z\sÅÄÖåäöА-Яа-я_]*$/,
+                    mentionDenotationChars: ["@", "#"],
+                    dataAttributes: ["myTagId"],
+                    source: function(searchTerm, renderList, mentionChar) {
+              let values;
+              if (mentionChar === "@") {
+                values = atValues;
+              } else {
+                const tags = that.$store.getters.tags;
+                values = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
+              }
+              if (searchTerm.length === 0) {
+                renderList(values.slice(0, 8), searchTerm);
+              } else {
+                let matches = values.filter(tag =>
+                        tag.value.startsWith(searchTerm)
+                );
+                if(matches.length ==0){
+                  matches = [{'id':0,'myTagId':0,'value':searchTerm}];
+                }
+                matches.sort(function(a, b){
+                  return a.value.length - b.value.length;
+                });
+
+                renderList(matches.slice(0, 8), searchTerm);
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   data() {
     return {
       addingProcess: false,
@@ -131,55 +170,10 @@ export default {
         { alias: "imageDrop", module: ImageDrop },
         { alias: "imageResize", module: ImageResize }
       ],
-      editorSettings: {
-        modules: {
-          imageDrop: true,
-          imageResize: {},
-          mention: {
-            allowedChars: /^[A-Za-z\sÅÄÖåäöА-Яа-я_]*$/,
-            mentionDenotationChars: ["@", "#"],
-            dataAttributes: ["myTagId"],
-            source: function(searchTerm, renderList, mentionChar) {
-              let values;
-              if (mentionChar === "@") {
-                values = atValues;
-              } else {
-                values = global_tags;
-              }
-              if (searchTerm.length === 0) {
-                renderList(values.slice(0, 8), searchTerm);
-              } else {
-                let matches = values.filter(tag =>
-                  tag.value.startsWith(searchTerm)
-                );
-                if(matches.length ==0){
-                    matches = [{'id':0,'myTagId':0,'value':searchTerm}];
-                }
-              matches.sort(function(a, b){
-                  return a.value.length - b.value.length;
-              });
 
-                renderList(matches.slice(0, 8), searchTerm);
-              }
-            }
-          }
-        }
-      }
     };
   },
-
-  async created() {
-    this.loadTags();
-//      const tags = await TagsService.all();
-//      global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
-  },
-
   methods: {
-    async loadTags(){
-      console.log('lt');
-      const tags = await TagsService.all();
-      global_tags = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
-    },
     async handleSavingContent() {
         var fd = new FormData();
       if(this.imageFile !== {}){
