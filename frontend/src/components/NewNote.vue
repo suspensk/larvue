@@ -218,7 +218,11 @@ export default {
 
           this.content = "";
           this.removeImage();
-          this.loadTags();
+          this.$store
+                  .dispatch("TAGS_REQUEST")
+                  .catch((e) => {
+                    this.$radio.$emit('show-notice', 'red', e);
+                  });
           this.addingProcess = false;
 
         } catch (e) {
