@@ -57,7 +57,6 @@
     data () {
       return {
         autoUpdate: true,
-        selectedTags: this.usedTags,
         isUpdating: false,
         name: 'Midnight Crew',
         title: 'The summer breeze'
@@ -66,7 +65,8 @@
     computed: {
       tags() {
         return this.$store.getters.tags;
-      }
+      },
+      selectedTags() {return this.usedTags},
     },
     watch: {
       isUpdating (val) {
