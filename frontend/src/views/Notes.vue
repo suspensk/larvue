@@ -55,8 +55,7 @@ export default {
   data() {
     return {
       notes: [],
-      tags:[],
-      tags_names:[],
+      tags_ids:[],
       dialog: false,
       curNote: 0,
       notesLoaded:false,
@@ -68,8 +67,7 @@ export default {
       this.drawer = !this.drawer;
     });
       this.$radio.$on('tag-search', (tags) => {
-          console.log('tag-search',tags)
-          this.tags = tags;
+          this.tags_ids = tags;
           this.init();
       });
 
@@ -83,31 +81,23 @@ export default {
     },
   methods: {
     async init() {
-        console.log('init')
-        if(this.tags.length ==0 && this.$route.query.tags !== undefined ){
-            this.tags_names = this.$route.query.tags.split(",");
+        this.notesLoaded = false;
+        if(this.tags_ids.length ==0 && this.$route.query.tags !== undefined ){
+            let tags_names = this.$route.query.tags.split(",");
             try {
-                let tagsObjs = await TagsService.all(this.tags_names);
-                this.tags = tagsObjs.map(a => a.id);
-              //  this.$radio.$emit('tag-query',this.tags);
+                let tagsObjs = await TagsService.all(tags_names);
+                this.tags_ids = tagsObjs.map(a => a.id);
             } catch (e) {
                 this.$radio.$emit('show-notice', 'red', 'Error tags loading');
             }
-
         }
-
-//       var tags = [];
-//        if(Object.keys(this.tags).length != 0){
-//            tags = this.tags.map(a => a.id);
-//        }
       try {
-          const res = await NotesService.all(this.tags);
+          const res = await NotesService.all(this.tags_ids);
           this.notes = res;
           this.notesLoaded = true;
       }  catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
       }
-
     },
 
       async deleteNote() {

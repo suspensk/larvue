@@ -6,7 +6,7 @@
       <v-layout wrap>
           <v-flex xs12>
             <v-autocomplete
-                    v-model="selectedTagsNames"
+                    v-model="selectedTagsIds"
                     :disabled="isUpdating"
                     :items="tags"
                     box
@@ -50,13 +50,13 @@
   </v-card>
 </template>
 <script>
-
+    import TagsService from "@/services/tags";
   export default {
     data () {
       return {
         autoUpdate: true,
         isUpdating: false,
-        selectedTagsNames: [29,47],
+        selectedTagsIds: [],
       }
     },
     created() {
@@ -73,25 +73,39 @@
           setTimeout(() => (this.isUpdating = false), 3000)
         }
       },
-        selectedTagsNames (val) {
+        selectedTagsIds (val) {
             this.$radio.$emit('tag-search',val);
         }
     },
     methods: {
-        init(){
+        async init(){
             if(this.$route.query.tags !== undefined ){
-             //   this.selectedTagsNames = this.$route.query.tags.split(",");
+                let tags_names = this.$route.query.tags.split(",");
+                let tagsObjs = await TagsService.all();
+                const result = tagsObjs.filter(function(tag){
+                    return tags_names.indexOf(tag.name) != -1
+                });
+                this.selectedTagsIds = result.map(a => a.id);
+                console.log('rez',result)
 
             }
         },
       remove (item) {
-        const index = this.selectedTagsNames.indexOf(item.id)
+        const index = this.selectedTagsIds.indexOf(item.id)
         if (index >= 0) {
-          this.selectedTagsNames.splice(index, 1);
-       //   this.$radio.$emit('tag-search',this.selectedTags);
+          this.selectedTagsIds.splice(index, 1);
         }
 
       },
+        createQuery(){
+            if(this.tags.length == 0){
+                return '/notes';
+            }
+            let tags_names = this.tags.map(a => a.name);
+            let tags_string = tags_names.join();
+            let query = '/notes?tags=' + tags_string;
+            return query;
+        },
 
 //        setTag (obj) {
 //            this.tags.push(obj);
