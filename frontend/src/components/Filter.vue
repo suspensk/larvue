@@ -6,7 +6,7 @@
       <v-layout wrap>
           <v-flex xs12>
             <v-autocomplete
-                    v-model="selectedTags"
+                    v-model="selectedTagsNames"
                     :disabled="isUpdating"
                     :items="tags"
                     box
@@ -50,23 +50,22 @@
   </v-card>
 </template>
 <script>
-  import { mapGetters } from 'vuex';
 
   export default {
-    props: ["usedTags"],
     data () {
       return {
         autoUpdate: true,
         isUpdating: false,
-        name: 'Midnight Crew',
-        title: 'The summer breeze'
+        selectedTagsNames: [],
       }
+    },
+    created() {
+          this.init();
     },
     computed: {
       tags() {
         return this.$store.getters.tags;
       },
-      selectedTags() {return this.usedTags},
     },
     watch: {
       isUpdating (val) {
@@ -76,10 +75,27 @@
       }
     },
     methods: {
+        init(){
+            if(this.$route.query.tags !== undefined ){
+                this.selectedTagsNames = this.$route.query.tags.split(",");
+
+            }
+        },
       remove (item) {
-        const index = this.selectedTags.indexOf(item.name)
-        if (index >= 0) this.selectedTags.splice(index, 1)
-      }
+        const index = this.selectedTagsNames.indexOf(item.name)
+        if (index >= 0) {
+          this.selectedTagsNames.splice(index, 1);
+       //   this.$radio.$emit('tag-search',this.selectedTags);
+        }
+
+      },
+
+//        setTag (obj) {
+//            this.tags.push(obj);
+//            this.$refs.autocomplete.setValue('');
+//            this.$router.push(this.createQuery());
+//            this.$radio.$emit('tag-search',this.tags);
+//        },
     }
   }
 </script>

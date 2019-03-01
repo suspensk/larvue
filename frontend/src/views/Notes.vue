@@ -16,7 +16,7 @@
 
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
-          <tags-filter :usedTags="tags_names"></tags-filter>
+          <tags-filter ></tags-filter>
         <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
         <template v-if="!notesLoaded">
             <div class="text-xs-center">
@@ -67,6 +67,11 @@ export default {
     this.$radio.$on("TOGGLE", () => {
       this.drawer = !this.drawer;
     });
+      this.$radio.$on('tag-search', (tags) => {
+          console.log('tag-search',tags)
+          this.tags = tags;
+          this.init();
+      });
 
     this.init();
   },
@@ -78,10 +83,12 @@ export default {
     },
   methods: {
     async init() {
+        console.log('init')
         if(this.tags.length ==0 && this.$route.query.tags !== undefined ){
             this.tags_names = this.$route.query.tags.split(",");
             try {
                 this.tags = await TagsService.all(this.tags_names);
+                this.$radio.$emit('tag-query',this.tags);
             } catch (e) {
                 this.$radio.$emit('show-notice', 'red', 'Error tags loading');
             }
