@@ -14,7 +14,7 @@
                     color="blue-grey lighten-2"
                     label="Select"
                     item-text="name"
-                    item-value="name"
+                    item-value="id"
                     multiple
             >
               <template
@@ -56,7 +56,7 @@
       return {
         autoUpdate: true,
         isUpdating: false,
-        selectedTagsNames: [],
+        selectedTagsNames: [29,47],
       }
     },
     created() {
@@ -72,17 +72,20 @@
         if (val) {
           setTimeout(() => (this.isUpdating = false), 3000)
         }
-      }
+      },
+        selectedTagsNames (val) {
+            this.$radio.$emit('tag-search',val);
+        }
     },
     methods: {
         init(){
             if(this.$route.query.tags !== undefined ){
-                this.selectedTagsNames = this.$route.query.tags.split(",");
+             //   this.selectedTagsNames = this.$route.query.tags.split(",");
 
             }
         },
       remove (item) {
-        const index = this.selectedTagsNames.indexOf(item.name)
+        const index = this.selectedTagsNames.indexOf(item.id)
         if (index >= 0) {
           this.selectedTagsNames.splice(index, 1);
        //   this.$radio.$emit('tag-search',this.selectedTags);

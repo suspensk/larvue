@@ -87,20 +87,21 @@ export default {
         if(this.tags.length ==0 && this.$route.query.tags !== undefined ){
             this.tags_names = this.$route.query.tags.split(",");
             try {
-                this.tags = await TagsService.all(this.tags_names);
-                this.$radio.$emit('tag-query',this.tags);
+                let tagsObjs = await TagsService.all(this.tags_names);
+                this.tags = tagsObjs.map(a => a.id);
+              //  this.$radio.$emit('tag-query',this.tags);
             } catch (e) {
                 this.$radio.$emit('show-notice', 'red', 'Error tags loading');
             }
 
         }
 
-       var tags = [];
-        if(Object.keys(this.tags).length != 0){
-            tags = this.tags.map(a => a.id);
-        }
+//       var tags = [];
+//        if(Object.keys(this.tags).length != 0){
+//            tags = this.tags.map(a => a.id);
+//        }
       try {
-          const res = await NotesService.all(tags);
+          const res = await NotesService.all(this.tags);
           this.notes = res;
           this.notesLoaded = true;
       }  catch (e) {
