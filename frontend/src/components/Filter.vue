@@ -89,7 +89,7 @@
          //   this.$router.push(this.createQuery());
         },
         '$route' (to, from) {
-            Object.assign(this.$data, this.$options.data())
+         //   Object.assign(this.$data, this.$options.data())
             this.init();
         }
     },
