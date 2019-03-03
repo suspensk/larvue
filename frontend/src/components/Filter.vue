@@ -6,7 +6,7 @@
       <v-layout wrap>
           <v-flex xs12>
             <v-autocomplete
-                    v-model="selectedTagsIds"
+                    v-model="selectedTags"
                     :disabled="isUpdating"
                     :items="tags"
                     box
@@ -16,6 +16,8 @@
                     item-text="name"
                     item-value="id"
                     multiple
+                    :return-object="true"
+                    @input="input"
             >
               <template
                       slot="selection"
@@ -56,7 +58,8 @@
       return {
         autoUpdate: true,
         isUpdating: false,
-        selectedTagsIds: [],
+        selectedTags: [],
+        loaded: false
       }
     },
     created() {
@@ -73,46 +76,48 @@
           setTimeout(() => (this.isUpdating = false), 3000)
         }
       },
-        selectedTagsIds (val) {
-            this.$radio.$emit('tag-search',val);
+        selectedTags (val) {
+         //   console.log('VAL',val)
+       //     this.$radio.$emit('tag-search',val);
+         //   this.$router.push(this.createQuery());
+        },
+        '$route' (to, from) {
+            this.init();
         }
     },
     methods: {
         async init(){
-            if(this.$route.query.tags !== undefined ){
+            if(this.$route.query.tags !== undefined){
                 let tags_names = this.$route.query.tags.split(",");
                 let tagsObjs = await TagsService.all();
-                const result = tagsObjs.filter(function(tag){
+                this.selectedTags = tagsObjs.filter(function(tag){
                     return tags_names.indexOf(tag.name) != -1
                 });
-                this.selectedTagsIds = result.map(a => a.id);
-                console.log('rez',result)
-
             }
+            this.loaded = true;
         },
       remove (item) {
-        const index = this.selectedTagsIds.indexOf(item.id)
-        if (index >= 0) {
-          this.selectedTagsIds.splice(index, 1);
-        }
-
+            this.selectedTags = this.selectedTags.filter(function(tag){
+                return tag.id != item.id
+            });
+          this.$router.push(this.createQuery());
       },
+        input (val) {
+            console.log("INPUT",val)
+            this.$router.push(this.createQuery());
+        },
         createQuery(){
-            if(this.tags.length == 0){
+            let val = this.selectedTags;
+            if(val.length == 0){
                 return '/notes';
             }
-            let tags_names = this.tags.map(a => a.name);
-            let tags_string = tags_names.join();
-            let query = '/notes?tags=' + tags_string;
+//            const result = this.tags.filter(function(tag){
+//                return val.indexOf(tag.id) != -1
+//            });
+            let tags_names = val.map(a => a.name);
+            let query = '/notes?tags=' + tags_names;
             return query;
         },
-
-//        setTag (obj) {
-//            this.tags.push(obj);
-//            this.$refs.autocomplete.setValue('');
-//            this.$router.push(this.createQuery());
-//            this.$radio.$emit('tag-search',this.tags);
-//        },
     }
   }
 </script>

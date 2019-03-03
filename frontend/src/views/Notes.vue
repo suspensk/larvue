@@ -66,10 +66,10 @@ export default {
     this.$radio.$on("TOGGLE", () => {
       this.drawer = !this.drawer;
     });
-      this.$radio.$on('tag-search', (tags) => {
-          this.tags_ids = tags;
-          this.init();
-      });
+//      this.$radio.$on('tag-search', (tags) => {
+//          this.tags_ids = tags;
+//          this.init();
+//      });
 
     this.init();
   },
