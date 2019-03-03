@@ -52,7 +52,7 @@
   </v-card>
 </template>
 <script>
-    import TagsService from "@/services/tags";
+
   export default {
     data () {
       return {
@@ -63,11 +63,18 @@
       }
     },
     created() {
-          this.init();
+      this.$radio.$on('tags-loaded', (tags) => {
+          if(!this.loaded && tags.length){
+              this.loaded = true;
+              this.init();
+          }
+      });
     },
     computed: {
       tags() {
-        return this.$store.getters.tags;
+          const tags = this.$store.getters.tags;
+          this.$radio.$emit('tags-loaded',tags);
+          return tags;
       },
     },
     watch: {
@@ -82,19 +89,30 @@
          //   this.$router.push(this.createQuery());
         },
         '$route' (to, from) {
+            Object.assign(this.$data, this.$options.data())
             this.init();
         }
     },
     methods: {
         async init(){
             if(this.$route.query.tags !== undefined){
-                let tags_names = this.$route.query.tags.split(",");
-                let tagsObjs = await TagsService.all();
-                this.selectedTags = tagsObjs.filter(function(tag){
-                    return tags_names.indexOf(tag.name) != -1
-                });
+                let queryTagsNames = this.$route.query.tags.split(",");
+                let filterTagsNames =  this.selectedTags.map(a => a.name);
+
+                Array.prototype.diff = function (a) {
+                    return this.filter(function (i) {
+                        return a.indexOf(i) === -1;
+                    });
+                };
+                let diff = queryTagsNames.diff(filterTagsNames)
+                if(diff.length){
+                    let allTagsObjs = this.tags;
+                    let queryTags = allTagsObjs.filter(function(tag){
+                        return queryTagsNames.indexOf(tag.name) != -1
+                    });
+                    this.selectedTags = queryTags;
+                }
             }
-            this.loaded = true;
         },
       remove (item) {
             this.selectedTags = this.selectedTags.filter(function(tag){
@@ -103,7 +121,6 @@
           this.$router.push(this.createQuery());
       },
         input (val) {
-            console.log("INPUT",val)
             this.$router.push(this.createQuery());
         },
         createQuery(){
@@ -111,9 +128,6 @@
             if(val.length == 0){
                 return '/notes';
             }
-//            const result = this.tags.filter(function(tag){
-//                return val.indexOf(tag.id) != -1
-//            });
             let tags_names = val.map(a => a.name);
             let query = '/notes?tags=' + tags_names;
             return query;
