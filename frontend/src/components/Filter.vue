@@ -59,37 +59,26 @@
         autoUpdate: true,
         isUpdating: false,
         selectedTags: [],
-        loaded: false
       }
     },
     created() {
-      this.$radio.$on('tags-loaded', (tags) => {
-          if(!this.loaded && tags.length){
-              this.loaded = true;
-              this.init();
-          }
+      this.$radio.$on('tags-loaded', () => {
+        this.init();
       });
     },
     computed: {
       tags() {
           const tags = this.$store.getters.tags;
-          this.$radio.$emit('tags-loaded',tags);
           return tags;
       },
     },
     watch: {
-      isUpdating (val) {
-        if (val) {
-          setTimeout(() => (this.isUpdating = false), 3000)
-        }
-      },
-        selectedTags (val) {
-         //   console.log('VAL',val)
-       //     this.$radio.$emit('tag-search',val);
-         //   this.$router.push(this.createQuery());
-        },
+//      isUpdating (val) {
+//        if (val) {
+//          setTimeout(() => (this.isUpdating = false), 3000)
+//        }
+//      },
         '$route' (to, from) {
-         //   Object.assign(this.$data, this.$options.data())
             this.init();
         }
     },
@@ -104,10 +93,9 @@
                         return a.indexOf(i) === -1;
                     });
                 };
-                let diff = queryTagsNames.diff(filterTagsNames)
+                let diff = queryTagsNames.diff(filterTagsNames);
                 if(diff.length){
-                    let allTagsObjs = this.tags;
-                    let queryTags = allTagsObjs.filter(function(tag){
+                    let queryTags = this.tags.filter(function(tag){
                         return queryTagsNames.indexOf(tag.name) != -1
                     });
                     this.selectedTags = queryTags;

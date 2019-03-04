@@ -42,7 +42,10 @@ export default {
   })
 
   this.$store
-          .dispatch("TAGS_REQUEST")
+          .dispatch("TAGS_REQUEST").
+          then(()=>{
+            this.$radio.$emit('tags-loaded');
+          })
           .catch((e) => {
             this.show-notice("red",e)
           });
