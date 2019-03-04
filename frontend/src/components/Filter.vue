@@ -1,6 +1,6 @@
 <template>
   <v-card
-          color="blue lighten-3"
+          color="red lighten-2"
           dark
   >
       <v-layout wrap>
