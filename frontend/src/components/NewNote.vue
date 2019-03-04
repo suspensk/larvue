@@ -120,7 +120,7 @@ export default {
           imageDrop: true,
                   imageResize: {},
           mention: {
-            allowedChars: /^[A-Za-z\sÅÄÖåäöА-Яа-я_]*$/,
+            allowedChars: /^[A-Za-zÅÄÖåäöА-Яа-я_]*$/,
                     mentionDenotationChars: ["@", "#"],
                     dataAttributes: ["myTagId"],
                     source: function(searchTerm, renderList, mentionChar) {

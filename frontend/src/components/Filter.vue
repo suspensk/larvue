@@ -1,6 +1,6 @@
 <template>
   <v-card
-          color="blue-grey darken-1"
+          color="blue lighten-3"
           dark
   >
       <v-layout wrap>
@@ -12,7 +12,7 @@
                     box
                     chips
                     color="blue-grey lighten-2"
-                    label="Select"
+                    label="Select tags to filter notes"
                     item-text="name"
                     item-value="id"
                     multiple
