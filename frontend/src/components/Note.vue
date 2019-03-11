@@ -4,6 +4,7 @@
           ref="editNote"
           :mode="mode"
           :noteId="note.id"
+          :noteText="note.text"
           @close-editor="closeEditor"
   ></new-note>
   <v-card v-else
@@ -142,7 +143,10 @@ export default {
     editNote(){
         this.$nextTick(() => {
             this.$refs.editNote.content = this.note.text;
-            this.$refs.editNote.imageData = '/uploads/540-' + this.note.images[0].name;
+            if(this.note.images[0]){
+                this.$refs.editNote.imageData = '/uploads/540-' + this.note.images[0].name;
+            }
+
 
         });
     },
