@@ -112,8 +112,8 @@ export default {
           }
       },
       async editNote() {
-          let note_id = this.curNote.id;
-          this.$refs.newNote.content = this.curNote.text;
+       //   let note_id = this.curNote.id;
+       //   this.$refs.newNote.content = this.curNote.text;
 //          try {
 //              await NotesService.delete(note_id);
 //              this.$radio.$emit('show-notice', 'primary', 'Note successfully deleted');
