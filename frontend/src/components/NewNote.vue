@@ -41,7 +41,8 @@
       </div>
       <div class="image-preview" v-if="imageData.length > 0">
         <v-btn @click="removeImage" icon> <v-icon>clear</v-icon></v-btn>
-        <img class="preview" :src="imageData">
+        <v-btn @click="rotateImage" icon> <v-icon>lock</v-icon></v-btn>
+        <img id="rotating" class="preview" :src="imageData">
       </div>
     </div>
   </v-card>
@@ -111,25 +112,26 @@ export default {
   components: {
     VueEditor
   },
-  props: ["mode", "noteId"],
+  props: ["mode", "noteId", "noteText"],
   computed: {
     editorSettings() {
       var that = this;
       return {
         modules: {
           imageDrop: true,
-                  imageResize: {},
+          imageResize: {},
           mention: {
             allowedChars: /^[A-Za-zÅÄÖåäöА-Яа-я_]*$/,
-                    mentionDenotationChars: ["@", "#"],
-                    dataAttributes: ["myTagId"],
-                    source: function(searchTerm, renderList, mentionChar) {
+            mentionDenotationChars: ["@", "#"],
+            dataAttributes: ["myTagId"],
+            source: function(searchTerm, renderList, mentionChar) {
               let values;
               if (mentionChar === "@") {
                 values = atValues;
               } else {
-                const tags = that.$store.getters.tags;
+                let tags = that.$store.getters.tags;
                 values = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
+                console.log('VALUES', values)
               }
               if (searchTerm.length === 0) {
                 renderList(values.slice(0, 8), searchTerm);
@@ -158,7 +160,7 @@ export default {
       imageData: "",
       imageRemoved: false,
       imageFile: {},
-      content: "",
+      content: this.noteText != undefined ? this.noteText : "",
       tags: [],
       privacy: 0,
       customToolbar: [
@@ -216,8 +218,9 @@ export default {
             this.$radio.$emit('show-notice', 'primary', 'Note added successfully');
           }
 
-          this.content = "";
-          this.removeImage();
+        //  this.content = "";
+          Object.assign(this.$data, this.$options.data())
+        //  this.removeImage();
           this.$store
                   .dispatch("TAGS_REQUEST")
                   .catch((e) => {
@@ -253,6 +256,28 @@ export default {
       this.imageRemoved = true;
       this.imageFile = {};
       document.querySelector("#fileinput").value="";
+    },
+    rotateImage: function(event){
+//      var offsetHeight = document.getElementById('rotating').offsetHeight;
+//      var offsetWidth = document.getElementById('rotating').offsetWidth;
+//      console.log(offsetHeight, offsetWidth)
+    //  $('#rotating').toggleClass('rotated');
+      var element = document.getElementById("rotating");
+      element.classList.toggle("rotated");
+      console.log(element.classList.contains("rotated"))
+
+      var imgH = document.querySelector('.preview').offsetHeight;
+      var imgW = document.querySelector('.preview').offsetWidth;
+      console.log(imgH, imgW)
+      var prH = document.querySelector('.image-preview').offsetHeight;
+      var prW = document.querySelector('.image-preview').offsetWidth;
+      console.log(prH, prW)
+
+      if(element.classList.contains("rotated")){
+        document.querySelector('.image-preview').style.height = imgW+100+"px";
+      } else {
+        document.querySelector('.image-preview').style.height = imgH+"px";
+      }
     }
   }
 };
@@ -260,15 +285,35 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
+ /* img {
+    transform: rotate(180deg);
+  }*/
+ #rotating {
+
+   /*width: 100px; height: 100px; background-color: Red; margin-top: 50px;
+   -webkit-transition: all 0.3s ease-in-out;
+   -moz-transition: all 0.3s ease-in-out;
+   -o-transition: all 0.3s ease-in-out;
+   transition: all 0.3s ease-in-out;*/
+ }
+ .rotated {
+   transform:rotate(90deg);
+   -webkit-transform:rotate(90deg);
+   -moz-transform:rotate(90deg);
+   -o-transform:rotate(90deg);
+ }
   .file-upload-form, .image-preview {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   /*  padding: 20px;*/
   }
   img.preview {
-    width: 200px;
+    max-width: 200px;
+  /*  max-height: 200px;*/
     background-color: white;
     border: 1px solid #DDD;
     padding: 5px;
+   /* position: absolute;
+    bottom: 40px;*/
   }
 
   .upload-btn-wrapper {
