@@ -123,14 +123,14 @@ export default {
           mention: {
             allowedChars: /^[A-Za-zÅÄÖåäöА-Яа-я_]*$/,
             mentionDenotationChars: ["@", "#"],
-            dataAttributes: ["myTagId"],
+          //  dataAttributes: ["myTagId"],
             source: function(searchTerm, renderList, mentionChar) {
               let values;
               if (mentionChar === "@") {
                 values = atValues;
               } else {
                 let tags = that.$store.getters.tags;
-                values = tags.map((a) => {return { 'id' : a.id, 'value' : a.name, 'myTagId': a.id}});
+                values = tags.map((a) => {return { 'id' : a.id, 'value' : a.name}});
                 console.log('VALUES', values)
               }
               if (searchTerm.length === 0) {
@@ -140,7 +140,7 @@ export default {
                         tag.value.startsWith(searchTerm)
                 );
                 if(matches.length ==0){
-                  matches = [{'id':0,'myTagId':0,'value':searchTerm}];
+                  matches = [{'id':0,'value':searchTerm}];
                 }
                 matches.sort(function(a, b){
                   return a.value.length - b.value.length;

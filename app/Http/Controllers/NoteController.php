@@ -74,20 +74,38 @@ class NoteController extends Controller
         ]);
     }
 
-    public function prepareTags ($tags, $newTags, $userId){
-        if(!empty($newTags)){
-            foreach($newTags as $newTagValue){
-                $newTag = [];
-                $newTag['user_id'] = $userId;
-                $newTag['name'] = $newTagValue;
-                $newTagObj = Tag::create($newTag);
+    public function addTags ($newTags, $userId){
+        $addedTags = [];
+        foreach($newTags as $newTagValue){
+            $newTag = [];
+            $newTag['user_id'] = $userId;
+            $newTag['name'] = $newTagValue;
+            $newTagObj = Tag::create($newTag);
+            $addedTags[] = $newTagObj;
+        }
+
+        return $addedTags;
+    }
+
+    public function joinTags ($tags, $newTags){
+            foreach($newTags as $newTagObj){
                 $tags[] = $newTagObj->id;
             }
-        }
         return $tags;
     }
+    public function changeText($tags,$text){
+        $oldText = [];
+        $newText=[];
+        foreach($tags as $at){
+            $oldText[]= 'data-id="0" data-value="'.$at->name.'"';
+            $newText[]= 'data-id="'.$at->id.'" data-value="'.$at->name.'"';;
+        }
+        return str_replace($oldText, $newText, $text);
+
+}
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'text' => 'required'
         ]);
@@ -100,8 +118,12 @@ class NoteController extends Controller
         $user = $request->user('api');
         $input = $request->all();
         $input['user_id'] = $user['id'];
-
-        $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
+        $tags= json_decode($request->tags);
+        if(!empty(json_decode($request->newtags))){
+            $addedTags = $this->addTags(json_decode($request->newtags), $user['id']);
+            $input['text'] = $this->changeText($addedTags, $input['text']);
+            $tags = $this->joinTags($tags, $addedTags);
+        }
 
         $note = Note::create($input);
         if(!empty($tags)){
@@ -135,7 +157,14 @@ class NoteController extends Controller
         $input['user_id'] = $user['id'];
         $note = Note::with('tags')->with('images')->find($id);
 
-        $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
+      //  $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
+        $tags= json_decode($request->tags);
+        if(!empty(json_decode($request->newtags))){
+            $addedTags = $this->addTags(json_decode($request->newtags), $user['id']);
+            $input['text'] = $this->changeText($addedTags, $input['text']);
+            $tags = $this->joinTags($tags, $addedTags);
+        }
+
         $oldTags = $note->tags;
         $oldTagsIds = $oldTags->pluck('id')->toArray();
         $addedTags = array_diff($tags, $oldTagsIds);
@@ -158,7 +187,7 @@ class NoteController extends Controller
             $this->addImage($request->file('image'), $user['id'], $note->id);
         }
 
-        $note->update(['text' => $request->text,'privacy' => $request->privacy]);
+        $note->update(['text' => $input['text'],'privacy' => $request->privacy]);
         $note = Note::with('tags')->with('images')->
         with('user')->find($id);
         return response()->json($note);
