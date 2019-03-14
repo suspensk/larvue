@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Tag;
 use App\Note;
 use App\Image;
 use Validator;
@@ -13,13 +14,12 @@ class NoteController extends Controller
     public function index(Request $request)
     {
         $user = $request->user('api');
-        if (isset($request->q)){
-            $q = json_decode($request->q);
-            if (!empty($q->tags)){
-                $callback = function($subQuery) use ($q) {
-                    $subQuery->whereIn('tag_id', $q->tags);
-                };
-            }
+        if (!empty($request->tags)){
+            $tags = $request->tags;
+            $callback = function($subQuery) use ($tags) {
+                $subQuery->whereIn('tag_id', $tags);
+            };
+
         }
 
         $query = Note::orderBy('created_at', 'desc');
@@ -35,7 +35,7 @@ class NoteController extends Controller
         if(isset($callback)){
             $query->
             whereHas('tags', $callback)->
-            with(['tags' => $callback]);
+            with('tags');
         } else {
             $query->with('tags');
         }
@@ -60,21 +60,69 @@ class NoteController extends Controller
         return response()->json($notes->toArray());
     }
 
+    public function addImage($file, $userId, $noteId){
+        $target_dir = __DIR__ . "/../../../public/uploads/";
+        $ext = $file->getClientOriginalExtension();
+
+        $target_file_name = base64_encode('user' .  $userId . 'time' . time()) . '.' . $ext ;
+        $this->uploadFiles($file, $target_dir, $target_file_name);
+
+        Image::create([
+            'original_name' => $file->getClientOriginalName(),
+            'name' => $target_file_name,
+            'note_id' => $noteId
+        ]);
+    }
+
+    public function prepareTags ($tags, $newTags, $userId){
+        if(!empty($newTags)){
+            foreach($newTags as $newTagValue){
+                $newTag = [];
+                $newTag['user_id'] = $userId;
+                $newTag['name'] = $newTagValue;
+                $newTagObj = Tag::create($newTag);
+                $tags[] = $newTagObj->id;
+            }
+        }
+        return $tags;
+    }
     public function store(Request $request)
     {
-        $user = $request->user('api');
-        $input = $request->all();
-        $file_flag = 0;
-        if(!empty($request->file('image'))){
-            $file = $request->file('image');
-            $target_dir = __DIR__ . "/../../../public/uploads/";
-            $ext = $file->getClientOriginalExtension();
+        $validator = Validator::make($request->all(), [
+            'text' => 'required'
+        ]);
 
-            $target_file_name = base64_encode('user' .  $user['id'] . 'time' . time()) . '.' . $ext ;
-            $this->uploadFiles($file, $target_dir, $target_file_name);
-            $file_flag = 1;
+        if ($validator->fails()) {
+            $errorString = implode("<br/>",$validator->messages()->all());
+            return response()->json(['errorText' => $errorString], 403);
         }
 
+        $user = $request->user('api');
+        $input = $request->all();
+        $input['user_id'] = $user['id'];
+
+        $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
+
+        $note = Note::create($input);
+        if(!empty($tags)){
+            $note->tags()->attach($tags);
+        }
+
+        $note->save();
+
+        if(!empty($request->file('image'))){
+            $this->addImage($request->file('image'), $user['id'], $note->id);
+        }
+     //   var_dump($note->id);
+
+        $success['text'] = $note->text;
+
+        return response()->json(['success' => $success]);
+    }
+
+    public function update (Request $request, $id) {
+        $user = $request->user('api');
+        $input = $request->all();
 
         $validator = Validator::make($request->all(), [
             'text' => 'required'
@@ -82,30 +130,38 @@ class NoteController extends Controller
 
         if ($validator->fails()) {
             $errorString = implode("<br/>",$validator->messages()->all());
-            return response()->json(['message' => $errorString], 403);
+            return response()->json(['errorText' => $errorString], 403);
         }
         $input['user_id'] = $user['id'];
-        $note = Note::create($input);
-        $tags = json_decode($request->tags);
+        $note = Note::with('tags')->with('images')->find($id);
 
-        foreach($tags as $tag){
-            $note->tags()->attach($tag);
+        $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
+        $oldTags = $note->tags;
+        $oldTagsIds = $oldTags->pluck('id')->toArray();
+        $addedTags = array_diff($tags, $oldTagsIds);
+        $removedTags = array_diff($oldTagsIds, $tags);
+        if(!empty($addedTags)){
+            $note->tags()->attach($addedTags);
         }
 
-        $note->save();
-
-     //   var_dump($note->id);
-        if($file_flag){
-            Image::create([
-                'original_name' => $file->getClientOriginalName(),
-                'name' => $target_file_name,
-                'note_id' => $note->id
-            ]);
+        if(!empty($removedTags)){
+            $note->tags()->detach($removedTags);
+        }
+        if($request->imageRemoved){
+            foreach($note->images as $oldImage){
+                $oldImage->delete();
+                unlink(__DIR__ . '/../../../public/uploads/'.$oldImage->name);
+            }
         }
 
-        $success['text'] = $note->text;;
+        if(!empty($request->file('image'))){
+            $this->addImage($request->file('image'), $user['id'], $note->id);
+        }
 
-        return response()->json(['success' => $success]);
+        $note->update(['text' => $request->text,'privacy' => $request->privacy]);
+        $note = Note::with('tags')->with('images')->
+        with('user')->find($id);
+        return response()->json($note);
     }
 
     public function show(Note $note)
@@ -116,6 +172,7 @@ class NoteController extends Controller
     public function destroy(Note $note)
     {
         $note->images()->delete();
+        $note->tags()->detach();
         $note->delete();
         return response()->json(['success'=>0]);
     }
