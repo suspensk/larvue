@@ -60,12 +60,12 @@ class NoteController extends Controller
         return response()->json($notes->toArray());
     }
 
-    public function addImage($file, $userId, $noteId){
+    public function addImage($file, $userId, $noteId, $rotated){
         $target_dir = __DIR__ . "/../../../public/uploads/";
         $ext = $file->getClientOriginalExtension();
 
         $target_file_name = base64_encode('user' .  $userId . 'time' . time()) . '.' . $ext ;
-        $this->uploadFiles($file, $target_dir, $target_file_name);
+        $this->uploadFiles($file, $target_dir, $target_file_name, $rotated);
 
         Image::create([
             'original_name' => $file->getClientOriginalName(),
@@ -132,8 +132,12 @@ class NoteController extends Controller
 
         $note->save();
 
+        $rotated = false;
+        if(!empty($request->rotated) && $request->rotated == "true"){
+            $rotated = true;
+        }
         if(!empty($request->file('image'))){
-            $this->addImage($request->file('image'), $user['id'], $note->id);
+            $this->addImage($request->file('image'), $user['id'], $note->id, $rotated);
         }
      //   var_dump($note->id);
 
@@ -176,15 +180,28 @@ class NoteController extends Controller
         if(!empty($removedTags)){
             $note->tags()->detach($removedTags);
         }
+        $rotated = false;
+        if(!empty($request->rotated) && $request->rotated == "true"){
+            $rotated = true;
+        }
+
         if($request->imageRemoved){
             foreach($note->images as $oldImage){
                 $oldImage->delete();
                 unlink(__DIR__ . '/../../../public/uploads/'.$oldImage->name);
+                unlink(__DIR__ . '/../../../public/uploads/540-'.$oldImage->name);
+                unlink(__DIR__ . '/../../../public/uploads/200-'.$oldImage->name);
             }
         }
 
         if(!empty($request->file('image'))){
-            $this->addImage($request->file('image'), $user['id'], $note->id);
+            $this->addImage($request->file('image'), $user['id'], $note->id, $rotated);
+        } elseif($rotated == true){
+            foreach($note->images as $oldImage){
+                $this->rotateImage(__DIR__ . '/../../../public/uploads/'.$oldImage->name);
+                $this->rotateImage(__DIR__ . '/../../../public/uploads/540-'.$oldImage->name);
+                $this->rotateImage(__DIR__ . '/../../../public/uploads/200-'.$oldImage->name);
+            }
         }
 
         $note->update(['text' => $input['text'],'privacy' => $request->privacy]);
@@ -200,7 +217,14 @@ class NoteController extends Controller
 
     public function destroy(Note $note)
     {
-        $note->images()->delete();
+        foreach($note->images as $oldImage){
+            $oldImage->delete();
+            unlink(__DIR__ . '/../../../public/uploads/'.$oldImage->name);
+            unlink(__DIR__ . '/../../../public/uploads/540-'.$oldImage->name);
+            unlink(__DIR__ . '/../../../public/uploads/200-'.$oldImage->name);
+        }
+
+      //  $note->images()->delete();
         $note->tags()->detach();
         $note->delete();
         return response()->json(['success'=>0]);
@@ -216,7 +240,7 @@ class NoteController extends Controller
 //        ]);
 //    }
 
-    public function uploadFiles($file, $target_dir, $target_file_name){
+    public function uploadFiles($file, $target_dir, $target_file_name, $rotated){
       //  $file = $request->file('image');
         $realPath = $file->getRealPath();
      //   $target_dir = __DIR__ . "/../../../public/uploads/";
@@ -267,6 +291,11 @@ class NoteController extends Controller
         } else {
         //    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
             if ($file->move($target_dir, $target_file_name )) {
+
+                if($rotated == true){
+                    $this->rotateImage($target_dir . $target_file_name);
+                }
+
                 if (copy($target_dir . $target_file_name, $target_dir . '200-' . $target_file_name)) {
                     $this->resize_image($target_dir . '200-' . $target_file_name, 200);
                 }
@@ -282,6 +311,41 @@ class NoteController extends Controller
             }
         }
         return $target_file;
+    }
+
+    function rotateImage($photo) {
+
+        $image_info = getimagesize($photo);
+        $type = $image_info[2];
+        switch ($type)
+        {
+            case IMAGETYPE_JPEG:
+                $image = imagecreatefromjpeg($photo);
+                break;
+            case IMAGETYPE_GIF:
+                $image = imagecreatefromgif($photo);
+                break;
+            case IMAGETYPE_PNG:
+                $image = imagecreatefrompng($photo);
+                break;
+            default:
+                die('Error loading '.$photo.' - File type '.$type.' not supported');
+        }
+             $new_image = imagerotate($image, -90, 0);
+        switch ($type)
+        {
+            case IMAGETYPE_JPEG:
+                imagejpeg($new_image, $photo, 100);
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($new_image, $photo);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($new_image, $photo);
+                break;
+            default:
+                die('Error saving image: '.$photo);
+        }
     }
 
     function resize_image($photo, $new_width) {
@@ -311,6 +375,7 @@ class NoteController extends Controller
     //    $new_width = 180;
         $new_height = $height / ($width / $new_width);
         $new_image = imagecreatetruecolor($new_width, $new_height);
+   //     $new_image = imagerotate($new_image, 90, 0);
         imagecopyresampled($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 
 // Save the new image over the top of the original photo
