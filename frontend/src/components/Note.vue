@@ -79,7 +79,7 @@
       <v-img v-for="image in note.images" :key="image.id" class="white--text" :src="'/uploads/540-' + image.name"> </v-img>
     </template>
 
-    <v-img class="white--text" :src="note.image" v-if="note.image">
+    <!--<v-img class="white&#45;&#45;text" :src="note.image" v-if="note.image">
       <v-container fill-height fluid>
         <v-layout>
           <v-flex xs12 align-end d-flex>
@@ -87,7 +87,7 @@
           </v-flex>
         </v-layout>
       </v-container>
-    </v-img>
+    </v-img>-->
     <v-card-title v-else primary-title>
       <span class="headline">{{ note.title }}</span>
     </v-card-title>

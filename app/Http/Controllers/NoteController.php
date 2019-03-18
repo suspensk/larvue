@@ -23,13 +23,20 @@ class NoteController extends Controller
         }
 
         $query = Note::orderBy('created_at', 'desc');
-        if(!empty($user)){
-            $query->where(function ($q) use ($user) {
-                $q->where('privacy','=',0)
-                    ->orWhere('user_id','=',$user->id);
-            });
+        if(!empty($request->feed) && $request->feed == "true"){
+            if(!empty($user)){
+                $query->where(function ($q) use ($user) {
+                    $q->where('privacy','=',0)
+                        ->orWhere('user_id','=',$user->id);
+                });
+            } else {
+                $query->where('privacy','=',0);
+            }
         } else {
-            $query->where('privacy','=',0);
+            if(empty($user)){
+                return response()->json([]);
+            }
+            $query->where('user_id','=',$user->id);
         }
 
         if(isset($callback)){

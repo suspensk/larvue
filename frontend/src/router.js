@@ -11,13 +11,20 @@ export default new Router({
       path: "/",
       alias: "/notes",
       name: "notes",
-      component: Notes
+      component: Notes,
+      props: { feed: false }
     },
     {
       path: "/notes/:id",
       name: "single.note",
       component: () =>
         import(/* webpackChunkName: "about" */ "./views/SingleNote.vue")
+    },
+    {
+      path: "/feed",
+      name: "notes",
+      component: Notes,
+      props: { feed: true }
     },
     {
       path: "/login",

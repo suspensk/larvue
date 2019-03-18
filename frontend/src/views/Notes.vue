@@ -18,7 +18,7 @@
       <v-flex xl4 lg5 md8 xs12 offset-md3>
 
         <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
-          <tags-filter ></tags-filter>
+          <tags-filter :feed="feed"></tags-filter>
         <template v-if="!notesLoaded">
             <div class="text-xs-center">
                 <v-flex my-5>
@@ -53,6 +53,7 @@ export default {
     Modal,
     TagsFilter,
   },
+    props: ["feed"],
   data() {
     return {
       notes: [],
@@ -93,7 +94,7 @@ export default {
             }
         }
       try {
-          const res = await NotesService.all(this.tags_ids);
+          const res = await NotesService.all(this.tags_ids, this.feed);
           this.notes = res;
           this.notesLoaded = true;
       }  catch (e) {

@@ -54,6 +54,7 @@
 <script>
 
   export default {
+    props: ["feed"],
     data () {
       return {
         autoUpdate: true,
@@ -71,6 +72,9 @@
           const tags = this.$store.getters.tags;
           return tags;
       },
+      mainUrl(){
+          return (this.feed == true ? 'feed' : 'notes');
+      }
     },
     watch: {
 //      isUpdating (val) {
@@ -79,6 +83,7 @@
 //        }
 //      },
         '$route' (to, from) {
+            Object.assign(this.$data, this.$options.data())
             this.init();
         }
     },
@@ -114,10 +119,10 @@
         createQuery(){
             let val = this.selectedTags;
             if(val.length == 0){
-                return '/notes';
+                return '/' + this.mainUrl;
             }
             let tags_names = val.map(a => a.name);
-            let query = '/notes?tags=' + tags_names;
+            let query = '/' + this.mainUrl + '?tags=' + tags_names;
             return query;
         },
     }
