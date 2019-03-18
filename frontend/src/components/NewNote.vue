@@ -224,7 +224,7 @@ export default {
           }
 
         //  this.content = "";
-          Object.assign(this.$data, this.$options.data())
+          Object.assign(this.$data, this.$options.data());
           this.removeImage();
           this.$store
                   .dispatch("TAGS_REQUEST")
@@ -232,7 +232,6 @@ export default {
                     this.$radio.$emit('show-notice', 'red', e);
                   });
           this.addingProcess = false;
-
         } catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
           this.addingProcess = false;
@@ -260,7 +259,9 @@ export default {
       this.imageData = "";
       this.imageRemoved = true;
       this.imageFile = {};
-      document.querySelector('.preview').classList.remove("rotated");
+      if(document.querySelector('.preview')){
+        document.querySelector('.preview').classList.remove("rotated");
+      }
       document.querySelector("#fileinput").value="";
     },
     rotateImage: function(event){
