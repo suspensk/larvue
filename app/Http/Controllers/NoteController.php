@@ -168,6 +168,9 @@ class NoteController extends Controller
         }
         $input['user_id'] = $user['id'];
         $note = Note::with('tags')->with('images')->find($id);
+        if($note->user->id != $user['id']){
+            return response()->json(['message' => 'Unauthorised'], 401);
+        }
 
       //  $tags = $this->prepareTags(json_decode($request->tags), json_decode($request->newtags), $user['id']);
         $tags= json_decode($request->tags);
@@ -223,8 +226,12 @@ class NoteController extends Controller
         return response()->json($note);
     }
 
-    public function destroy(Note $note)
+    public function destroy(Request $request, Note $note)
     {
+        $user = $request->user('api');
+        if($note->user->id != $user['id']){
+            return response()->json(['message' => 'Unauthorised'], 401);
+        }
         foreach($note->images as $oldImage){
             $oldImage->delete();
             unlink(__DIR__ . '/../../../public/uploads/'.$oldImage->name);

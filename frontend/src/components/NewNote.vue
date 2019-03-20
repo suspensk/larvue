@@ -235,6 +235,7 @@ export default {
         } catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
           this.addingProcess = false;
+          this.$emit('close-editor');
         }
     },
     previewImage: function(event) {
