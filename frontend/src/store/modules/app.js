@@ -23,8 +23,15 @@ const state = {
       lighterGray: "#ddd"
     }
   },
-  isLoading: true
+  isLoading: true,
+  feed: localStorage.getItem("feed") || false,
+
 };
+
+const getters = {
+  feed: state => state.feed,
+};
+
 
 const mutations = {
   [types.CLOSE_MENU](state) {
@@ -40,6 +47,9 @@ const mutations = {
   },
   setLoading(state, isLoading) {
     state.isLoading = isLoading;
+  },
+  ["FEED_REQUEST"]: (state, value) => {
+    state.feed = value;
   }
 };
 
@@ -52,11 +62,16 @@ const actions = {
   },
   isToggleWithoutAnimation({ commit }, value) {
     commit(types.TOGGLE_WITHOUT_ANIMATION, value);
-  }
+  },
+  ["FEED_REQUEST"]: ({ commit }, value) => {
+    localStorage.setItem("feed", value);
+    commit("FEED_REQUEST", value);
+  },
 };
 
 export default {
   state,
   mutations,
-  actions
+  actions,
+  getters
 };

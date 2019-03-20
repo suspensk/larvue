@@ -83,6 +83,7 @@ export default {
     },
   methods: {
     async init() {
+        this.$store.dispatch("FEED_REQUEST", this.feed);
         this.notesLoaded = false;
         if(this.tags_ids.length ==0 && this.$route.query.tags !== undefined ){
             let tags_names = this.$route.query.tags.split(",");

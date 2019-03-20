@@ -41,11 +41,14 @@ export default {
         wordsArr.push([tag.name, tag.user_id]);
       });
       return wordsArr;
+    },
+    feed() {
+      return this.$store.getters.feed;
     }
   },
   methods: {
     onWordClick: function(word) {
-      this.$router.push("/notes?tags="+ word[0]);
+      this.$router.push("/" + (this.feed == true ? 'feed' : 'notes') + "?tags="+ word[0]);
     },
   }
 };
