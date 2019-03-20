@@ -3,6 +3,7 @@ import axios from "axios";
 
 const state = {
   token: localStorage.getItem("jwt") || "",
+  uid: localStorage.getItem("uid") || 0 ,
   name: localStorage.getItem("name") || "",
   email: localStorage.getItem("email") || "",
   status: ""
@@ -12,6 +13,7 @@ const getters = {
   isAuthenticated: state => !!state.token,
   authStatus: state => state.status,
   token: state => state.token,
+  uid: state => state.uid,
   name: state => state.name,
   email: state => state.email
 };
@@ -34,12 +36,14 @@ const actions = {
       })
         .then(resp => {
           const token = resp.data.success.token;
+          const uid = resp.data.success.uid;
           const name = resp.data.success.name;
           const email = resp.data.success.email;
           localStorage.setItem("jwt", token); // store the token in localstorage
+          localStorage.setItem("uid", uid);
           localStorage.setItem("name", name);
           localStorage.setItem("email", email);
-          const payload = {"token": token, "name": name, "email": email};
+          const payload = {"token": token, "uid": uid, "name": name, "email": email};
           commit("AUTH_SUCCESS", payload);
           // you have your token, now log in your user :)
           //dispatch("USER_REQUEST");
@@ -78,12 +82,14 @@ const actions = {
       })
           .then(resp => {
             const token = resp.data.success.token;
+            const uid = resp.data.success.uid;
             const name = resp.data.success.name;
             const email = resp.data.success.email;
             localStorage.setItem("jwt", token); // store the token in localstorage
+            localStorage.setItem("uid", uid);
             localStorage.setItem("name", name);
             localStorage.setItem("email", email);
-            const payload = {"token": token, "name": name, "email": email};
+            const payload = {"token": token, "uid": uid, "name": name, "email": email};
             commit("AUTH_SUCCESS", payload);
             // you have your token, now log in your user :)
             //dispatch("USER_REQUEST");
@@ -107,6 +113,7 @@ const mutations = {
   ["AUTH_SUCCESS"]: (state, payload) => {
     state.status = "success";
     state.token = payload.token;
+    state.uid = payload.uid;
     state.name = payload.name;
     state.email = payload.email;
     console.log(state.email)
@@ -116,6 +123,7 @@ const mutations = {
   },
   ["AUTH_LOGOUT"]: state => {
     state.token = "";
+    state.uid = 0;
     state.name = "";
     state.email = "";
   }

@@ -37,7 +37,11 @@ export default {
     words() {
       let wordsArr = []
       const tags =  this.$store.getters.tags;
+
       tags.forEach(tag => {
+        if(!this.feed && tag.user_id != this.$store.getters.uid){
+          return;
+        }
         wordsArr.push([tag.name, tag.user_id]);
       });
       return wordsArr;
