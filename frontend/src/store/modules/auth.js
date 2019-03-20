@@ -3,13 +3,17 @@ import axios from "axios";
 
 const state = {
   token: localStorage.getItem("jwt") || "",
+  name: localStorage.getItem("name") || "",
+  email: localStorage.getItem("email") || "",
   status: ""
 };
 
 const getters = {
   isAuthenticated: state => !!state.token,
   authStatus: state => state.status,
-  token: state => state.token
+  token: state => state.token,
+  name: state => state.name,
+  email: state => state.email
 };
 
 const actions = {
@@ -30,8 +34,13 @@ const actions = {
       })
         .then(resp => {
           const token = resp.data.success.token;
+          const name = resp.data.success.name;
+          const email = resp.data.success.email;
           localStorage.setItem("jwt", token); // store the token in localstorage
-          commit("AUTH_SUCCESS", token);
+          localStorage.setItem("name", name);
+          localStorage.setItem("email", email);
+          const payload = {"token": token, "name": name, "email": email};
+          commit("AUTH_SUCCESS", payload);
           // you have your token, now log in your user :)
           //dispatch("USER_REQUEST");
           resolve(resp);
@@ -69,8 +78,13 @@ const actions = {
       })
           .then(resp => {
             const token = resp.data.success.token;
+            const name = resp.data.success.name;
+            const email = resp.data.success.email;
             localStorage.setItem("jwt", token); // store the token in localstorage
-            commit("AUTH_SUCCESS", token);
+            localStorage.setItem("name", name);
+            localStorage.setItem("email", email);
+            const payload = {"token": token, "name": name, "email": email};
+            commit("AUTH_SUCCESS", payload);
             // you have your token, now log in your user :)
             //dispatch("USER_REQUEST");
             resolve(resp);
@@ -90,15 +104,20 @@ const mutations = {
   ["AUTH_REQUEST"]: state => {
     state.status = "loading";
   },
-  ["AUTH_SUCCESS"]: (state, token) => {
+  ["AUTH_SUCCESS"]: (state, payload) => {
     state.status = "success";
-    state.token = token;
+    state.token = payload.token;
+    state.name = payload.name;
+    state.email = payload.email;
+    console.log(state.email)
   },
   ["AUTH_ERROR"]: state => {
     state.status = "error";
   },
   ["AUTH_LOGOUT"]: state => {
     state.token = "";
+    state.name = "";
+    state.email = "";
   }
 };
 
