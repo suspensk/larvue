@@ -12,7 +12,7 @@
       left
     >
       <v-btn icon large flat slot="activator">
-        <v-avatar class="while" size="30px"> <span>AG</span> </v-avatar>
+        <v-avatar class="while" size="30px"> <span>{{initials}}</span> </v-avatar>
       </v-btn>
       <v-list class="pa-0">
         <v-list-tile ripple="ripple" rel="noopener" :to="{ name: 'settings' }">
@@ -47,6 +47,14 @@
 <script>
 export default {
   name: "app-toolbar",
+    computed: {
+        initials() {
+            let name =  this.$store.getters.name;
+            let arr = name.split(' ');
+            arr = arr.map(n => n.substring(0,1));
+            return arr.join();
+        },
+    },
   data() {
     return {};
   },
