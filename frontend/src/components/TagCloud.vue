@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     words() {
-      let wordsArr = []
+      let wordsArr = [];
       const tags =  this.$store.getters.tags;
 
       tags.forEach(tag => {

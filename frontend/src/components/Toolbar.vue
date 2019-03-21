@@ -9,6 +9,7 @@
       origin="center center"
       :nudge-bottom="10"
       transition="scale-transition"
+      left
     >
       <v-btn icon large flat slot="activator">
         <v-avatar class="while" size="30px"> <span>AG</span> </v-avatar>
