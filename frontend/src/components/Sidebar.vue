@@ -9,14 +9,15 @@
     :class="{ menu: true, transparent: $vuetify.breakpoint.mdAndUp }"
   >
     <v-list class="mail-list" dense>
-      <template v-for="item in menus">
-        <v-layout row v-if="item.heading" align-center :key="item.heading">
+      <template  v-for="item in menus">
+        <template v-if="item.visible">
+        <v-layout row v-if="item.heading " align-center :key="item.heading">
           <v-flex xs12>
             <v-subheader v-if="item.heading"> {{ item.heading }} </v-subheader>
             <v-divider></v-divider>
           </v-flex>
         </v-layout>
-        <!-- Top level -->
+        <!-- Top level !! -->
         <v-list-tile v-else :key="item.text" :to="item.to">
           <v-list-tile-content>
             <v-list-tile-title>{{ item.title }}</v-list-tile-title>
@@ -29,6 +30,7 @@
             >{{ item.chip }}</v-chip
           >
         </v-list-tile>
+        </template>
       </template>
     </v-list>
     <v-sheet class="ml-1 mr-1" color="transparent" height="400" tag="div">
@@ -45,33 +47,46 @@ export default {
   components: {
     TagCloud
   },
-  data() {
-    return {
-      menus: [
+  computed: {
+    menus() {
+      console.log(7)
+      return [
         {
           title: "Feed",
           group: "notes",
           icon: "email",
           to: { path: "/feed" },
-          chip: 10
+          chip: 10,
+          visible: true
         },
         {
           title: "My Notes",
           group: "notes",
           icon: "start",
           to: { path: "/notes" },
-          chip: 5
+          chip: 5,
+          visible: this.$store.getters.isAuthenticated
         },
         {
           title: "Login",
           to: { path: "/login" },
+          visible: !this.$store.getters.isAuthenticated
         },
         {
           title: "Register",
           to: { path: "/register" },
+          visible: !this.$store.getters.isAuthenticated
         },
-        { heading: "Tags" }
-      ],
+        {
+          heading: "Tags",
+          visible: true
+        }
+      ];
+    }
+  },
+  data() {
+    return {
+
       drawer: !this.$vuetify.breakpoint.smAndDown
     };
   },

@@ -5,6 +5,7 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu
+      v-if="$store.getters.isAuthenticated"
       offset-y
       origin="center center"
       :nudge-bottom="10"
