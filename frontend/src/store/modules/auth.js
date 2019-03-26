@@ -57,11 +57,23 @@ const actions = {
     });
   },
   ["AUTH_LOGOUT"]: ({ commit }) => {
-    return new Promise(resolve => {
-      commit("AUTH_LOGOUT");
-      localStorage.removeItem("jwt"); // clear your user's token from localstorage
-      resolve();
-    });
+      return new Promise((resolve, reject) => {
+          axios({
+              url: "/api/logout",
+              method: "POST"
+          })
+              .then(resp => {
+                  localStorage.removeItem("jwt"); // clear your user's token from localstorage
+                  localStorage.removeItem("uid");
+                  localStorage.removeItem("name");
+                  localStorage.removeItem("email");
+                  commit("AUTH_LOGOUT");
+                  resolve();
+              })
+              .catch(err => {
+                  reject(err);
+              });
+      });
   },
   ["REGISTRATION_REQUEST"]: ({ commit }, user) => {
     return new Promise((resolve, reject) => {
@@ -122,20 +134,10 @@ const mutations = {
     state.status = "error";
   },
   ["AUTH_LOGOUT"]: state => {
-      axios({
-          url: "/api/logout",
-          method: "POST"
-      })
-          .then(resp => {
-              state.token = "";
-              state.uid = 0;
-              state.name = "";
-              state.email = "";
-          })
-          .catch(err => {
-              reject(err);
-          });
-
+      state.token = "";
+      state.uid = 0;
+      state.name = "";
+      state.email = "";
   }
 };
 
