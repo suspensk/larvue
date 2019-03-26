@@ -122,10 +122,20 @@ const mutations = {
     state.status = "error";
   },
   ["AUTH_LOGOUT"]: state => {
-    state.token = "";
-    state.uid = 0;
-    state.name = "";
-    state.email = "";
+      axios({
+          url: "/api/logout",
+          method: "POST"
+      })
+          .then(resp => {
+              state.token = "";
+              state.uid = 0;
+              state.name = "";
+              state.email = "";
+          })
+          .catch(err => {
+              reject(err);
+          });
+
   }
 };
 
