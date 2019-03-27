@@ -72,7 +72,7 @@ class NoteController extends Controller
     {
         $user = $request->user('api');
         $countFeed = Note::where('privacy','=',0)->count();
-        $countNotes = 90;
+        $countNotes = 0;
         if(!empty($user)){
             $countNotes = Note::where('user_id','=',$user->id)->count();
         }

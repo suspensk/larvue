@@ -93,7 +93,6 @@ export default {
     this.$radio.$on("TOGGLE", () => {
       this.drawer = !this.drawer;
     });
-    this.$store.dispatch("COUNT_REQUEST");
   },
 
   methods: {}

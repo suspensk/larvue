@@ -83,6 +83,7 @@ export default {
     },
   methods: {
     async init() {
+        this.$store.dispatch("COUNT_REQUEST");
         this.$store.dispatch("FEED_REQUEST", this.feed);
         this.notesLoaded = false;
         if(this.tags_ids.length ==0 && this.$route.query.tags !== undefined ){
@@ -108,7 +109,6 @@ export default {
           try {
               await NotesService.delete(note_id);
               this.$radio.$emit('show-notice', 'primary', 'Note successfully deleted');
-              this.$store.dispatch("COUNT_REQUEST");
               this.init();
           } catch(e) {
               this.$radio.$emit('show-notice', 'red', 'Error while deleting note');
