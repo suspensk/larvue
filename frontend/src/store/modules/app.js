@@ -1,4 +1,6 @@
 import * as types from "../mutation-types";
+//import axios from "axios";
+import $http from "../../services/client";
 
 const state = {
   sidebar: {
@@ -25,13 +27,50 @@ const state = {
   },
   isLoading: true,
   feed: localStorage.getItem("feed") || false,
+  nCount: localStorage.getItem("nCount") || 0,
+  fCount: localStorage.getItem("fCount") || 0,
 
 };
 
 const getters = {
   feed: state => state.feed,
+  nCount: state => state.nCount,
+  fCount: state => state.fCount,
 };
 
+const actions = {
+  closeMenu({ commit }) {
+    commit(types.CLOSE_MENU);
+  },
+  toggleSidebar({ commit }, opened) {
+    commit(types.TOGGLE_SIDEBAR, opened);
+  },
+  isToggleWithoutAnimation({ commit }, value) {
+    commit(types.TOGGLE_WITHOUT_ANIMATION, value);
+  },
+  ["FEED_REQUEST"]: ({ commit }, value) => {
+    localStorage.setItem("feed", value);
+    commit("FEED_REQUEST", value);
+  },
+  ["COUNT_REQUEST"]: ({ commit }) => {
+    return new Promise((resolve, reject) => {
+      $http({
+        url: "/count",
+        method: "GET"
+      })
+          .then(resp => {
+            localStorage.setItem("nCount", resp.data.notes);
+            localStorage.setItem("fCount", resp.data.feed);
+            commit("COUNT_REQUEST",resp.data);
+            resolve(resp);
+          })
+          .catch(err => {
+            reject(err);
+          });
+    });
+  },
+
+};
 
 const mutations = {
   [types.CLOSE_MENU](state) {
@@ -50,24 +89,14 @@ const mutations = {
   },
   ["FEED_REQUEST"]: (state, value) => {
     state.feed = value;
-  }
+  },
+  ["COUNT_REQUEST"]: (state, payload) => {
+    state.nCount = payload.notes;
+    state.fCount = payload.feed;
+  },
 };
 
-const actions = {
-  closeMenu({ commit }) {
-    commit(types.CLOSE_MENU);
-  },
-  toggleSidebar({ commit }, opened) {
-    commit(types.TOGGLE_SIDEBAR, opened);
-  },
-  isToggleWithoutAnimation({ commit }, value) {
-    commit(types.TOGGLE_WITHOUT_ANIMATION, value);
-  },
-  ["FEED_REQUEST"]: ({ commit }, value) => {
-    localStorage.setItem("feed", value);
-    commit("FEED_REQUEST", value);
-  },
-};
+
 
 export default {
   state,

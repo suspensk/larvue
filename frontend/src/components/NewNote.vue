@@ -231,6 +231,7 @@ export default {
                   .catch((e) => {
                     this.$radio.$emit('show-notice', 'red', e);
                   });
+          this.$store.dispatch("COUNT_REQUEST");
           this.addingProcess = false;
         } catch (e) {
           this.$radio.$emit('show-notice', 'red', e);

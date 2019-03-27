@@ -49,14 +49,13 @@ export default {
   },
   computed: {
     menus() {
-      console.log(7)
       return [
         {
           title: "Feed",
           group: "notes",
           icon: "email",
           to: { path: "/feed" },
-          chip: 10,
+          chip: this.$store.getters.fCount,
           visible: true
         },
         {
@@ -64,7 +63,7 @@ export default {
           group: "notes",
           icon: "start",
           to: { path: "/notes" },
-          chip: 5,
+          chip: this.$store.getters.nCount,
           visible: this.$store.getters.isAuthenticated
         },
         {
@@ -86,7 +85,6 @@ export default {
   },
   data() {
     return {
-
       drawer: !this.$vuetify.breakpoint.smAndDown
     };
   },
@@ -95,6 +93,7 @@ export default {
     this.$radio.$on("TOGGLE", () => {
       this.drawer = !this.drawer;
     });
+    this.$store.dispatch("COUNT_REQUEST");
   },
 
   methods: {}

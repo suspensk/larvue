@@ -68,6 +68,18 @@ class NoteController extends Controller
         return response()->json($notes->toArray());
     }
 
+    public function notesCount(Request $request)
+    {
+        $user = $request->user('api');
+        $countFeed = Note::where('privacy','=',0)->count();
+        $countNotes = 90;
+        if(!empty($user)){
+            $countNotes = Note::where('user_id','=',$user->id)->count();
+        }
+
+        return response()->json(['feed' => $countFeed, 'notes' => $countNotes]);
+    }
+
     public function addImage($file, $userId, $noteId, $rotated){
         $target_dir = __DIR__ . "/../../../public/uploads/";
         $ext = $file->getClientOriginalExtension();

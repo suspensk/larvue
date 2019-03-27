@@ -108,6 +108,7 @@ export default {
           try {
               await NotesService.delete(note_id);
               this.$radio.$emit('show-notice', 'primary', 'Note successfully deleted');
+              this.$store.dispatch("COUNT_REQUEST");
               this.init();
           } catch(e) {
               this.$radio.$emit('show-notice', 'red', 'Error while deleting note');

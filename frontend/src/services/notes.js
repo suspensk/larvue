@@ -17,6 +17,11 @@ export default {
     return resp.data;
   },
 
+  count: async () => {
+    const resp = await $http.get(`/count`);
+    return resp.data;
+  },
+
   more: async id => {
     const resp = await $http.get(`/notes/${id}`);
     return resp.data.text;
