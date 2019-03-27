@@ -32,6 +32,11 @@
         </v-list-tile>
         </template>
       </template>
+    <!--  <v-layout row  align-center>
+        <v-flex xs12>
+          <v-divider></v-divider>
+        </v-flex>
+      </v-layout>-->
     </v-list>
     <v-sheet class="ml-1 mr-1" color="transparent" height="400" tag="div">
       <tag-cloud></tag-cloud>
@@ -77,9 +82,10 @@ export default {
           visible: !this.$store.getters.isAuthenticated
         },
         {
-          heading: "Tags",
-          visible: true
-        }
+          title: "Profile",
+          to: { path: "/profile" },
+          visible: this.$store.getters.isAuthenticated
+        },
       ];
     }
   },
