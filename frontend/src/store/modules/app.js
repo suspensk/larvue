@@ -26,7 +26,7 @@ const state = {
     }
   },
   isLoading: true,
-  feed: localStorage.getItem("feed") || false,
+  feed: localStorage.getItem("feed") || true,
   nCount: localStorage.getItem("nCount") || 0,
   fCount: localStorage.getItem("fCount") || 0,
 

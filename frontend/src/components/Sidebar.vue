@@ -39,7 +39,7 @@
       </v-layout>-->
     </v-list>
     <v-sheet class="ml-1 mr-1" color="transparent" height="400" tag="div">
-      <tag-cloud></tag-cloud>
+      <tag-cloud v-if="showCloud"></tag-cloud>
     </v-sheet>
   </v-navigation-drawer>
 </template>
@@ -92,6 +92,9 @@ export default {
           visible: this.$store.getters.isAuthenticated,
         },*/
       ];
+    },
+    showCloud() {
+      return this.$route.path == "/feed" || this.$route.path == "/notes" || this.$route.path == "/";
     }
   },
   data() {
