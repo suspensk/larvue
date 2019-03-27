@@ -1,5 +1,6 @@
 <template>
   <v-card
+          v-if="selectedTags.length"
           color="red lighten-2"
           dark
   >

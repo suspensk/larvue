@@ -16,9 +16,9 @@
 
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
-
+          <tags-filter  :feed="feed"></tags-filter>
         <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
-          <tags-filter :feed="feed"></tags-filter>
+
         <template v-if="!notesLoaded">
             <div class="text-xs-center">
                 <v-flex my-5>
