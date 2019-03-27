@@ -86,6 +86,11 @@ export default {
           to: { path: "/profile" },
           visible: this.$store.getters.isAuthenticated
         },
+        /*{
+          title: "Logout",
+          to: { path: "/logout" },
+          visible: this.$store.getters.isAuthenticated,
+        },*/
       ];
     }
   },
