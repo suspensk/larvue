@@ -13,7 +13,7 @@ class TagController extends Controller
     public function index(Request $request)
     {
         $query = Tag::orderBy('created_at', 'desc');
-     /*   if (isset($request->q)){
+        if (isset($request->q)){
             if(!is_array($request->q)){
                 $query->where('name', 'like', '%' . $request->q .'%');
             } else {
@@ -21,7 +21,7 @@ class TagController extends Controller
                     $query->orWhere('name', '=', $tag);
                 }
             }
-        }*/
+        }
 
       //   \DB::connection()->enableQueryLog();
 
