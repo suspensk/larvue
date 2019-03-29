@@ -39,10 +39,10 @@ export default {
       const tags =  this.$store.getters.tags;
 
       tags.forEach(tag => {
-        if(!this.feed && tag.user_id != this.$store.getters.uid){
+        if(!this.feed && tag.user_id != this.$store.getters.uid || !tag.notes_count){
           return;
         }
-        wordsArr.push([tag.name, tag.user_id]);
+        wordsArr.push([tag.name, tag.notes_count]);
       });
       return wordsArr;
     },
