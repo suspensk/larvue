@@ -31,14 +31,14 @@ class TagController extends Controller
         $whereStr = '';
          if (isset($request->q)){
               if(!is_array($request->q)){
-                  $whereStr .= 'WHERE `name` like "%' . $request->q .'%"';
+                  $whereStr .= ' WHERE `name` like "%' . $request->q .'%"';
                  // $query->where('name', 'like', '%' . $request->q .'%');
               } else {
                   foreach($request->q as $tag){
-                      $whereStr .= 'OR WHERE `name` = "' . $tag .'"';
+                      $whereStr .= ' OR `name` = "' . $tag .'"';
                    //   $query->orWhere('name', '=', $tag);
                   }
-                  $whereStr = substr($whereStr,3);
+                  $whereStr = ' WHERE ' . substr($whereStr,3);
               }
           }
 
