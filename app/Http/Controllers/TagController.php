@@ -12,7 +12,13 @@ class TagController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Tag::orderBy('created_at', 'desc');
+        $user= $request->user('api');
+        $user_id = 0;
+        if(!empty($user)){
+            $user_id = $user['id'];
+        }
+// !!
+      /*  $query = Tag::orderBy('created_at', 'desc');
         if (isset($request->q)){
             if(!is_array($request->q)){
                 $query->where('name', 'like', '%' . $request->q .'%');
@@ -21,15 +27,41 @@ class TagController extends Controller
                     $query->orWhere('name', '=', $tag);
                 }
             }
-        }
+        }*/
+        $whereStr = '';
+         if (isset($request->q)){
+              if(!is_array($request->q)){
+                  $whereStr .= 'WHERE `name` like "%' . $request->q .'%"';
+                 // $query->where('name', 'like', '%' . $request->q .'%');
+              } else {
+                  foreach($request->q as $tag){
+                      $whereStr .= 'OR WHERE `name` = "' . $tag .'"';
+                   //   $query->orWhere('name', '=', $tag);
+                  }
+                  $whereStr = substr($whereStr,3);
+              }
+          }
 
-      //   \DB::connection()->enableQueryLog();
+         \DB::connection()->enableQueryLog();
+        $tags = \DB::select('SELECT `tags`.*, (
+                                SELECT COUNT(*)
+                                FROM `notes`
+                                INNER JOIN `note_tag` ON `notes`.`id` = `note_tag`.`note_id`
+                                WHERE `tags`.`id` = `note_tag`.`tag_id` AND `notes`.`privacy` = 0) AS `feed_count`,
+                                (
+                                SELECT COUNT(*)
+                                FROM `notes`
+                                INNER JOIN `note_tag` ON `notes`.`id` = `note_tag`.`note_id`
+                                WHERE `tags`.`id` = `note_tag`.`tag_id` AND `notes`.user_id = ' .$user_id . ') AS `notes_count`
+                                FROM `tags` '.$whereStr.' 
+                                ORDER BY `created_at` DESC');
 
-        $tags= $query->withCount('notes')->get();
-//        $queries = \DB::connection()->getQueryLog();
-//        $last_query = end($queries);
-//            var_dump($queries);
-        return response()->json($tags->toArray());
+       // $tags= $query->withCount('notes')->has('privacy','=',0)->get();
+      //  $tags= $query->leftJoin('notes', 'users.id', '=', 'posts.user_id')->get();
+        $queries = \DB::connection()->getQueryLog();
+        $last_query = end($queries);
+       //     var_dump($queries);
+        return response()->json($tags);
     }
 
     public function store(Request $request)

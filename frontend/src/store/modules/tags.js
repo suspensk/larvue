@@ -1,4 +1,5 @@
-import axios from "axios";
+//import axios from "axios";
+import $http from "../../services/client";
 // TODO: use defined types
 
 const state = {
@@ -15,8 +16,8 @@ const actions = {
       // The Promise used for router redirect in login
       commit("TAGS_REQUEST");
       
-      axios({
-        url: "/api/tags",
+      $http({
+        url: "/tags",
         method: "GET"
       })
         .then(resp => {
