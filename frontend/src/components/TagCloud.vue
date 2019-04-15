@@ -41,7 +41,7 @@ export default {
       tags.forEach(tag => {
         if(this.feed && tag.feed_count){
           wordsArr.push([tag.name, tag.feed_count]);
-        } else if(tag.notes_count){
+        } else if(!this.feed && tag.notes_count){
           wordsArr.push([tag.name, tag.notes_count]);
         }
       });
