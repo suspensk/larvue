@@ -9,10 +9,10 @@ export default new Router({
   routes: [
     {
       path: "/",
-      alias: "/notes",
+      alias: "/feed",
       name: "notes",
       component: Notes,
-      props: { feed: false }
+      props: { feed: true }
     },
     {
       path: "/notes/:id",
