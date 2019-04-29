@@ -85,6 +85,7 @@ export default {
     async init() {
         this.$store.dispatch("COUNT_REQUEST");
         this.$store.dispatch("FEED_REQUEST", this.feed);
+        console.log('notes disp',this.feed)
         this.notesLoaded = false;
         if(this.tags_ids.length ==0 && this.$route.query.tags !== undefined ){
             let tags_names = this.$route.query.tags.split(",");
