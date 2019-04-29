@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app dense>
     <v-toolbar-title class="headline text-uppercase">
-      <span>Kurbs</span> <span class="font-weight-light">.me</span>
+      <span class="mr-1">TAGGY</span> <v-chip><span class="text-lowercase">#{{ $route.path.substr(1) }}</span></v-chip>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu

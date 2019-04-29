@@ -6,7 +6,7 @@
           <v-card-text>
             <div class="layout column align-center">
               <h1 class="flex my-4 primary--text">
-                <span>Kurbs</span> <span class="font-weight-light">.me</span>
+                <span>TAGGY</span> <!--<span class="font-weight-light">.me</span>-->
               </h1>
             </div>
             <v-form>
