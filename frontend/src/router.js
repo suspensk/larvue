@@ -9,6 +9,7 @@ export default new Router({
   routes: [
     {
       path: "/",
+      redirect: "/feed",
       alias: "/notes",
       name: "notes",
       component: Notes,
