@@ -97,7 +97,7 @@
       <span class="grey--text">
       Used tags:
       <span v-for="tag,tagIndex in note.tags" :id="tag.id">
-        <router-link :to="'/notes?tags='+ tag.name">#{{tag.name}}</router-link>&nbsp;&nbsp;
+        <a @click="onWordClick(tag.name)">#{{tag.name}}</a>&nbsp;&nbsp;
      </span></span>
       </v-card-title>
     <v-card-actions>
@@ -114,7 +114,7 @@ import moment from 'moment';
 
 export default {
   name: "Note",
-  props: ["post"],
+  props: ["post","feed"],
   data() {
     return {
       note: this.post,
@@ -135,6 +135,9 @@ export default {
         }
     },
   methods: {
+      onWordClick: function(word) {
+          this.$router.push("/" + (this.feed == true ? 'feed' : 'notes') + "?tags="+ word);
+      },
     async more() {
      // e.preventDefault();
       let text = await NotesService.more(this.note.id);

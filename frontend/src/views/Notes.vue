@@ -31,7 +31,7 @@
             </div>
         </template>
           <div v-for="post in notes" :key="post.id">
-          <note @show-modal="dialog = true; curNote = post" @edit-note="editNote(); curNote = post" :post="post"></note>
+          <note @show-modal="dialog = true; curNote = post" @edit-note="editNote(); curNote = post" :post="post" :feed="feed"></note>
         </div>
       </v-flex>
     </v-layout>
