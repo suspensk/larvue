@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     words() {
-        console.log('wc',this.feed)
+    //    console.log('wc',this.feed)
       let wordsArr = [];
       const tags =  this.$store.getters.tags;
 
