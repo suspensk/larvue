@@ -17,22 +17,27 @@
     <v-layout row wrap>
       <v-flex xl4 lg5 md8 xs12 offset-md3>
           <tags-filter  :feed="feed"></tags-filter>
-        <new-note ref="newNote" @reload-list="init()" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
+        <new-note ref="newNote"  @push-note="pushNote" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
 
-        <template v-if="!notesLoaded">
-            <div class="text-xs-center">
-                <v-flex my-5>
-                    <v-progress-circular
-                            :size="70"
-                            color="primary"
-                            indeterminate
-                    ></v-progress-circular>
-                  </v-flex>
-            </div>
-        </template>
+
           <div v-for="post in notes" :key="post.id">
           <note @show-modal="dialog = true; curNote = post" @edit-note="editNote(); curNote = post" :post="post" :feed="feed"></note>
-        </div>
+          </div>
+          <div class="mb-5 text-xs-center">
+              <v-btn v-if="!allLoaded && notesLoaded" @click="init()" color=primary>Load More</v-btn>
+          </div>
+
+          <template v-if="!notesLoaded">
+              <div class="text-xs-center">
+                  <v-flex my-5>
+                      <v-progress-circular
+                              :size="70"
+                              color="primary"
+                              indeterminate
+                      ></v-progress-circular>
+                  </v-flex>
+              </div>
+          </template>
       </v-flex>
     </v-layout>
   </v-container>
@@ -61,6 +66,10 @@ export default {
       dialog: false,
       curNote: 0,
       notesLoaded:false,
+    //  busy:false,
+      page:1,
+      allLoaded:false
+
     };
   },
 
@@ -68,11 +77,15 @@ export default {
     this.$radio.$on("TOGGLE", () => {
       this.drawer = !this.drawer;
     });
-//      this.$radio.$on('tag-search', (tags) => {
-//          this.tags_ids = tags;
-//          this.init();
-//      });
-
+//        var that = this;
+//          window.onscroll = function() {
+//          var pageY = window.pageYOffset || document.documentElement.scrollTop;
+//          var innerHeight = document.documentElement.clientHeight;
+//              console.log('csroll, allloaded = ', that.allLoaded);
+//          if(pageY + innerHeight + 10 >= document.documentElement.scrollHeight && !that.busy && !that.allLoaded){
+//              that.init(true);
+//          }
+//      };
     this.init();
   },
     watch: {
@@ -83,9 +96,22 @@ export default {
     },
   methods: {
     async init() {
+       /* if(this.busy ==true){
+            return;
+        }
+        this.busy =true;
+        console.log(scroll,'scrolll')
+        if(!scroll){
+            this.notes = [];
+            this.notesLoaded=false;
+            this.busy=false;
+            this.page=1;
+            this.allLoaded=false;
+        }*/
+
         this.$store.dispatch("COUNT_REQUEST");
         this.$store.dispatch("FEED_REQUEST", this.feed);
-        console.log('notes disp',this.feed)
+    //    console.log('notes disp',this.feed)
         this.notesLoaded = false;
         if(this.tags_ids.length ==0 && this.$route.query.tags !== undefined ){
             let tags_names = this.$route.query.tags.split(",");
@@ -97,11 +123,26 @@ export default {
             }
         }
       try {
-          const res = await NotesService.all(this.tags_ids, this.feed);
-          this.notes = res;
+          const res = await NotesService.all(this.tags_ids, this.feed, this.page);
+
+       //   this.notes = res.data;
+
+
+
+          this.notes = res.data.reduce( function(coll,item){
+              coll.push( item );
+              return coll;
+          }, this.notes );
           this.notesLoaded = true;
+          if(res.next_page_url != null){
+              this.page = ++res.current_page;
+          } else {
+              this.allLoaded = true;
+          }
+       //   this.busy = false;
       }  catch (e) {
           this.$radio.$emit('show-notice', 'red', e);
+       //   this.busy = false;
       }
     },
 
@@ -109,23 +150,18 @@ export default {
           let note_id = this.curNote.id;
           try {
               await NotesService.delete(note_id);
+              this.notes = this.notes.filter(function (note){
+                  return note.id != note_id
+              })
               this.$radio.$emit('show-notice', 'primary', 'Note successfully deleted');
-              this.init();
+            //  this.init();
           } catch(e) {
               this.$radio.$emit('show-notice', 'red', 'Error while deleting note');
           }
       },
-      async editNote() {
-       //   let note_id = this.curNote.id;
-       //   this.$refs.newNote.content = this.curNote.text;
-//          try {
-//              await NotesService.delete(note_id);
-//              this.$radio.$emit('show-notice', 'primary', 'Note successfully deleted');
-//              this.init();
-//          } catch(e) {
-//              this.$radio.$emit('show-notice', 'red', 'Error while deleting note');
-//          }
-      },
+      pushNote(note){
+        this.notes.unshift(note);
+      }
   }
 };
 </script>

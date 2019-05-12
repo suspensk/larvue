@@ -51,7 +51,8 @@ class NoteController extends Controller
         $query->
         with('images')->
         with('user');
-        $notes = $query->get();
+        //  $notes = $query->get();
+        $notes = $query->simplePaginate(5);
 //        \DB::connection()->enableQueryLog();
 //        $notes= $query->get();
 //        $queries = \DB::connection()->getQueryLog();
@@ -87,7 +88,7 @@ class NoteController extends Controller
         $target_file_name = base64_encode('user' .  $userId . 'time' . time()) . '.' . $ext ;
         $this->uploadFiles($file, $target_dir, $target_file_name, $rotated);
 
-        Image::create([
+        return Image::create([
             'original_name' => $file->getClientOriginalName(),
             'name' => $target_file_name,
             'note_id' => $noteId
@@ -161,9 +162,12 @@ class NoteController extends Controller
         }
      //   var_dump($note->id);
 
-        $success['text'] = $note->text;
+      //  $success['text'] = $note->text;
+        $note = Note::with('tags')->with('images')->
+        with('user')->find($note->id);
+        return response()->json($note);
 
-        return response()->json(['success' => $success]);
+      //  return response()->json(['success' => $success]);
     }
 
     public function update (Request $request, $id) {

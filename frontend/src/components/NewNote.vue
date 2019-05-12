@@ -219,7 +219,8 @@ export default {
             this.$radio.$emit('show-notice', 'primary', 'Note saved successfully');
           } else {
             const res = await NotesService.add(fd);
-            this.$emit('reload-list');
+            this.$emit('push-note', res);
+          //  this.$emit('reload-list');
             this.$radio.$emit('show-notice', 'primary', 'Note added successfully');
           }
 
