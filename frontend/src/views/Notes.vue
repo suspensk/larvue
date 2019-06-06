@@ -63,6 +63,7 @@ export default {
     return {
       notes: [],
       tags_ids:[],
+      searchText:'',
       dialog: false,
       curNote: 0,
       notesLoaded:false,
@@ -77,6 +78,14 @@ export default {
     this.$radio.$on("TOGGLE", () => {
       this.drawer = !this.drawer;
     });
+
+//      this.$radio.$on('search', (text) => {
+//          this.searchText = text;
+//          this.page= 1;
+//
+//          console.log('TEXT',text)
+//          this.init();
+//      });
 //        var that = this;
 //          window.onscroll = function() {
 //          var pageY = window.pageYOffset || document.documentElement.scrollTop;
@@ -122,8 +131,11 @@ export default {
                 this.$radio.$emit('show-notice', 'red', 'Error tags loading');
             }
         }
+        if(this.searchText == "" && this.$route.query.search !== undefined ){
+            this.searchText = this.$route.query.search;
+        }
       try {
-          const res = await NotesService.all(this.tags_ids, this.feed, this.page);
+          const res = await NotesService.all(this.tags_ids, this.searchText, this.feed, this.page);
 
        //   this.notes = res.data;
 

@@ -118,12 +118,24 @@
             this.$router.push(this.createQuery());
         },
         createQuery(){
+            let tags = "?tags=";
+            let search = "";
             let val = this.selectedTags;
+
+
+            if(this.$route.query.search !== undefined){
+              if(val.length == 0){
+                search += "?";
+              } else {
+                search += "&";
+              }
+              search += "search=" + this.$route.query.search;
+            }
             if(val.length == 0){
-                return '/' + this.mainUrl;
+                return '/' + this.mainUrl + search;
             }
             let tags_names = val.map(a => a.name);
-            let query = '/' + this.mainUrl + '?tags=' + tags_names;
+            let query = '/' + this.mainUrl + tags + tags_names + search ;
             return query;
         },
     }

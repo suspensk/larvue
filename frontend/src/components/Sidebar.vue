@@ -39,6 +39,15 @@
       </v-layout>-->
     </v-list>
     <v-sheet class="ml-1 mr-1" color="transparent" height="400" tag="div">
+        <v-form  v-on:submit.prevent="search">
+      <v-text-field
+              v-model="searchText"
+              label="Search"
+              :rules="searchRules"
+              :counter="10"
+              required
+      ></v-text-field>
+        </v-form>
       <tag-cloud v-if="showCloud"></tag-cloud>
     </v-sheet>
   </v-navigation-drawer>
@@ -53,6 +62,12 @@ export default {
     TagCloud
   },
   computed: {
+      mainUrl(){
+          return (this.feed == true ? 'feed' : 'notes');
+      },
+    feed() {
+      return this.$store.getters.feed;
+    },
     menus() {
       return [
         {
@@ -99,6 +114,11 @@ export default {
   },
   data() {
     return {
+      searchText: '',
+      searchRules: [
+      /*  v => !!v || "E-mail is required",
+      v => /.+@.+/.test(v) || "E-mail must be valid"*/
+    ],
       drawer: !this.$vuetify.breakpoint.smAndDown
     };
   },
@@ -107,9 +127,41 @@ export default {
     this.$radio.$on("TOGGLE", () => {
       this.drawer = !this.drawer;
     });
+    if(this.$route.query.search !=undefined){
+      this.searchText = this.$route.query.search;
+    }
   },
+  watch: {
+    '$route' (to, from) {
+     // Object.assign(this.$data, this.$options.data())
+      this.searchText = "";
+      if(this.$route.query.search !=undefined){
+        this.searchText = this.$route.query.search;
+      }
+    }
+  },
+  methods: {
+      search(){
+          this.$router.push(this.createQuery());
+      //    this.$radio.$emit('search',this.searchText);
 
-  methods: {}
+      },
+      createQuery(){
+        let tags = "";
+        let search = "";
+        if(this.$route.query.tags !== undefined){
+          tags = "?tags=" + this.$route.query.tags;
+          search= "&search=";
+        } else {
+          search= "?search=";
+        }
+          if(this.searchText == ""){
+              return '/' + this.mainUrl + tags;
+          }
+          let query = '/' + this.mainUrl + tags + search + this.searchText;
+          return query;
+      },
+  }
 };
 </script>
 

@@ -48,11 +48,16 @@ class NoteController extends Controller
             $query->with('tags');
         }
 
+        if (!empty($request->search)){
+            $search = trim(strtolower($request->search));
+            $query->where('text','LIKE',"%$search%");
+        }
+
         $query->
         with('images')->
         with('user');
         //  $notes = $query->get();
-        $notes = $query->simplePaginate(5);
+        $notes = $query->simplePaginate(20);
 //        \DB::connection()->enableQueryLog();
 //        $notes= $query->get();
 //        $queries = \DB::connection()->getQueryLog();

@@ -1,13 +1,18 @@
 import $http from "./client";
 
 export default {
-  all: async (tags, feed, page) => {
+  all: async (tags, searchText, feed, page) => {
     let props = {};
     props.params = {};
     props.params.feed = feed;
     if(tags != undefined && tags.length) {
       props.params.tags = tags;
     }
+
+    if(searchText != undefined && searchText != '') {
+      props.params.search = searchText;
+    }
+
     const resp = await $http.get(`/notes?page=`+page, props);
     return resp.data;
   },
