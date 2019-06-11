@@ -56,23 +56,42 @@ class NoteController extends Controller
         $query->
         with('images')->
         with('user');
+
         //  $notes = $query->get();
-        $notes = $query->simplePaginate(20);
-//        \DB::connection()->enableQueryLog();
-//        $notes= $query->get();
-//        $queries = \DB::connection()->getQueryLog();
-//        $last_query = end($queries);
-    //    var_dump($queries);
+   //     \DB::connection()->enableQueryLog();
+        $data = $query->simplePaginate(20)->toArray();
+        $notes = & $data['data'];
+
+        if(isset($callback)){
+            usort($notes, function(array $a, array $b) use($tags){
+
+                $aIds = array_column($a['tags'], 'id');
+                $bIds = array_column($b['tags'], 'id');
+                $aIntersect = count(array_intersect($tags, $aIds));
+                $bIntersect = count(array_intersect($tags, $bIds));
+
+                if ($aIntersect == $bIntersect) {
+                    return 0;
+                }
+                return ($aIntersect > $bIntersect) ? -1 : 1;
+            });
+        }
+
+     //   $queries = \DB::connection()->getQueryLog();
+     //   $last_query = end($queries);
+     //   var_dump($queries);
 
         foreach($notes as $key=>$note){
-            $text = str_limit($note->text, 1000, '');
-            if($text != $note->text){
+            $text = str_limit($note['text'], 1000, '');
+            if($text != $note['text']){
                 $notes[$key]['text'] = $text;
                 $notes[$key]['limited'] = true;
             }
         }
-        return response()->json($notes->toArray());
+
+        return response()->json($data);
     }
+
 
     public function notesCount(Request $request)
     {
