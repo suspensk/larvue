@@ -132,7 +132,7 @@ export default {
     }
   },
   watch: {
-    '$route' (to, from) {
+    '$route' () {
      // Object.assign(this.$data, this.$options.data())
       this.searchText = "";
       if(this.$route.query.search !=undefined){

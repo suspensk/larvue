@@ -18,8 +18,18 @@
       <v-flex xl4 lg5 md8 xs12 offset-md3>
           <tags-filter  :feed="feed"></tags-filter>
         <new-note ref="newNote"  @push-note="pushNote" v-if="$store.getters.isAuthenticated" :mode="'add'"></new-note>
-
-
+          <div class="text-xs-center">
+            <h3 v-if="$route.query.search">
+                <v-icon>search</v-icon>
+                You are searching:
+                <v-chip>
+                    <span class="text-lowercase">{{$route.query.search}}</span>
+                    <div class="v-chip__close">
+                        <i aria-hidden="true" @click="removeSearch()" class="v-icon material-icons theme--dark">cancel</i>
+                    </div>
+                </v-chip>
+            </h3>
+              </div>
           <div v-for="post in notes" :key="post.id">
           <note @show-modal="dialog = true; curNote = post" @edit-note="editNote(); curNote = post" :post="post" :feed="feed"></note>
           </div>
@@ -173,6 +183,11 @@ export default {
       },
       pushNote(note){
         this.notes.unshift(note);
+      },
+      removeSearch(){
+          let query = Object.assign({}, this.$route.query);
+          delete query.search;
+          this.$router.replace({ query });
       }
   }
 };
