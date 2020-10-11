@@ -108,7 +108,7 @@ export default {
     this.init();
   },
     watch: {
-        '$route' (to, from) {
+        '$route' () {
             Object.assign(this.$data, this.$options.data())
             this.init();
         }

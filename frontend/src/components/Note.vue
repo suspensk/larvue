@@ -5,6 +5,7 @@
           :mode="mode"
           :noteId="note.id"
           :noteText="note.text"
+          :privacy="note.privacy"
           @close-editor="closeEditor"
   ></new-note>
   <v-card v-else
@@ -94,11 +95,12 @@
     </v-card-title>
     <v-card-text v-html="note.text"></v-card-text>
       <v-card-title primary-title>
-      <span class="grey--text">
+      <span v-if="note.tags.length" class="grey--text">
       Used tags:
       <span v-for="tag,tagIndex in note.tags" :id="tag.id">
         <a @click="onWordClick(tag.name)">#{{tag.name}}</a>&nbsp;&nbsp;
-     </span></span>
+     </span>
+      </span>
       </v-card-title>
     <v-card-actions>
       <v-spacer></v-spacer>

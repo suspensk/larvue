@@ -68,7 +68,7 @@ export default {
                     this.$router.push("/login");
                 })
                 .catch((e) => {
-                    this.show-notice("red",e)
+                    this.showNotice("red",e)
                 });
 
     },

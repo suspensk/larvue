@@ -112,7 +112,7 @@ export default {
   components: {
     VueEditor
   },
-  props: ["mode", "noteId", "noteText"],
+  props: ["mode", "noteId", "noteText", "privacy"],
   computed: {
     editorSettings() {
       var that = this;
@@ -161,7 +161,7 @@ export default {
       imageFile: {},
       content: this.noteText != undefined ? this.noteText : "",
       tags: [],
-      privacy: 0,
+      privacy: this.privacy != undefined ? this.privacy : 0,
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
