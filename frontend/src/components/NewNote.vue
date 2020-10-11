@@ -21,11 +21,11 @@
           <input id="fileinput" type="file" name="myfile" @change="previewImage" accept="image/*" />
         </div>
          </v-btn>
-      <template v-if="privacy == 0">
-        <v-btn @click="privacy = 2" icon> <v-icon>public</v-icon></v-btn> public
+      <template v-if="notePrivacy == 0">
+        <v-btn @click="notePrivacy = 2" icon> <v-icon>public</v-icon></v-btn> public
       </template>
       <template v-else>
-        <v-btn @click="privacy = 0" icon> <v-icon>lock</v-icon></v-btn> private
+        <v-btn @click="notePrivacy = 0" icon> <v-icon>lock</v-icon></v-btn> private
       </template>
       <v-spacer></v-spacer>
       <v-btn flat icon @click="handleSavingContent">
@@ -67,42 +67,6 @@ const atValues = [
     id: "5a97b2a464a8ff2d0996d2ef",
     value: "Elva Bowman",
     link: "mailto:elva@bowman.com",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4ecb768a2092a298b",
-    value: "Ella Cochran",
-    link: "http://www.ellacochran.com",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a418b984d2aff97657",
-    value: "Knowles Walls",
-    link: "mailto:knowles@walls.com",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4436c2c9acc6b5ad0",
-    value: "Hanson Webb",
-    link: "http://www.hansonwebb.com",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4436c2c9acc6b5ad1",
-    value: "Maria Cruz",
-    link: "mailto:maria@cruz.com",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4436c2c9acc6b5ad2",
-    value: "Pablo Escobar",
-    link: "http://www.pabloescobar.com",
-    myCustomProperty: "custom value"
-  },
-  {
-    id: "5a97b2a4436c2c9acc6b5ad3",
-    value: "Richard Smith",
-    link: "mailto:richard@smith.com",
     myCustomProperty: "custom value"
   }
 ];
@@ -161,7 +125,7 @@ export default {
       imageFile: {},
       content: this.noteText != undefined ? this.noteText : "",
       tags: [],
-      privacy: this.privacy != undefined ? this.privacy : 0,
+      notePrivacy: this.privacy != undefined ? this.privacy : 0, // redeclare for switch new\edit
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -205,7 +169,7 @@ export default {
           );
 
         fd.append('text', this.content);
-        fd.append('privacy', this.privacy);
+        fd.append('privacy', this.notePrivacy);
         fd.append('tags', JSON.stringify(tagsData));
         fd.append('newtags', JSON.stringify(tagsDataNew));
 
